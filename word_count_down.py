@@ -1,5 +1,6 @@
 import sqlite3
 import pathlib
+from project_info import *
 from create_project import create_project
 from manage_projects import manage_projects
 
@@ -7,18 +8,13 @@ def main():
     connection, cursor = init_db()
     start(connection, cursor)
 
-def get_projects(connection, cursor, status):
-    return cursor.execute("SELECT * FROM projects WHERE status=?", (status,)).fetchall()
-
-def display_project_names(projects):
-    for p in projects:
-        print(p[1])
 
 def init_db():
     p = pathlib.Path("dbs/")
     p.mkdir(exist_ok=True)
 
     connection = sqlite3.connect('dbs/projects.db')
+    connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
 
     init_projects_table(cursor)
