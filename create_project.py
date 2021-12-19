@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from project_info import *
 
 def create_project(connection, cursor):
     name = name_project()
@@ -14,11 +15,13 @@ def create_project(connection, cursor):
     if start_date == date.today():
         words_today = current_wordcount
     else: words_today = 0
-    today = date.today()
-    project_values = (name, wordcount, current_wordcount, words_today, deadline, start_date, today, "ongoing")
+    today = date_to_text(date.today())
+    project_values = (name, wordcount, current_wordcount, words_today, date_to_text(deadline), date_to_text(start_date), today, "ongoing")
 
     cursor.executemany("INSERT INTO projects VALUES (null,?,?,?,?,?,?,?,?)", (project_values,))
     connection.commit()
+
+    print("Your project has been successfully added! You can now view it and register your progress.\n")
 
 
 
