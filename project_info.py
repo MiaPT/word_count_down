@@ -1,6 +1,7 @@
 import sqlite3
 from colorama import Fore, Style
 from datetime import datetime, date
+
 # TODO: give this file a better name
 # here are the functions that fetch, calculate and display information about projects
 
@@ -18,32 +19,37 @@ def display_project_info_minimal(project):
     current_wc = project['current_word_count']
     words_left = project['word_count_goal'] - current_wc
 
-    print("\nProject ID:  ", project['ID'])
-    print("Project title:  ", project['name'])
-    print("Current word count:  ", (Fore.LIGHTGREEN_EX + str(current_wc) + Style.RESET_ALL))
-    print("Words left to write:  ", words_left)
-    print("Days until deadline:  ", days_left)
+    print("\nProject ID:".ljust(23), project['ID'])
+    print("Project title:".ljust(23), project['name'])
+    print("Current word count:".ljust(23), current_wc)
+    print("Words left to write:".ljust(23), words_left)
+    print("Days until deadline:".ljust(23), days_left)
 
     return (days_left, current_wc, words_left)
     
 
 
-
-
 def display_project_info_detailed(project):
     days_left, current_wc, words_left = display_project_info_minimal(project)
+    start_date = project['start_date']
+    if days_left == 0:
+        avg_words_until_deadline = words_left
+    else: avg_words_until_deadline = int(words_left/days_left)
+
+    start_date_dateobj = text_to_date(start_date)
+    if date.today() == start_date_dateobj:
+        avg_words_so_far = current_wc
+    else: avg_words_so_far = int(current_wc/((date.today() - text_to_date(start_date)))) 
+
+    print("Avg words/day from now:".ljust(23), avg_words_until_deadline)
+    print("Avg words/day so far:".ljust(23), avg_words_so_far)
     print("")
-    #avg words to write until deadline
-    #avg words written per day so far
-    #start date
-    #deadline 
-    #last updated
-
-
-
-    # name, deadline, words left, word goal, avg per day so far, avg per day to finish, 
-    # words written/registered today, start date, 
-    pass
+    print("Deadline:".ljust(20), project['deadline'])
+    print("Word count goal:".ljust(20), project['word_count_goal']) 
+    print("Start date:".ljust(20), start_date)
+    print("Last updated".ljust(20), project['last_updated'])
+    print("")
+    
 
 def days_diff(text_date1, text_date2):
     date1 = text_to_date(text_date1)
@@ -56,5 +62,5 @@ def date_to_text(dt):
 def text_to_date(text):
     return datetime.strptime(text, "%d-%m-%Y").date()
 
-def even_length(s):
-    
+#def determine_avgwords_color(so_far, from_now):
+

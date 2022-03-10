@@ -1,4 +1,6 @@
+import keyboard
 from project_info import *
+
 
 def manage_projects(connection, cursor, projects):
     project_ids = list(map((lambda x: x['ID']), projects))
@@ -17,6 +19,7 @@ def manage_projects(connection, cursor, projects):
         return 
     project = list(filter(lambda x: x['ID'] == int(answer), projects))[0]
     update_project(connection, cursor, project)
+    return manage_projects(connection, cursor, project)
     
     """if not (answer.isnumeric() and int(answer) in range(1,len(projects)+1)):
         print("That's not a valid input!!!>:(")
@@ -26,7 +29,19 @@ def manage_projects(connection, cursor, projects):
 def update_project(connection, cursor, project):
     display_project_info_detailed(project)
 
-    print("Do you want to update or edit this project?\nEnter the corresponding number, or write 'back' to go back to the previous menu")
-    answer = input()
+    print("Do you want to update or edit this project?\nEnter the corresponding number, or write 'menu' to go back\n")
+    print(" 1  Update current word count")
+    print(" 2  Update word count goal")
+    print(" 3  Change project deadline")
+    print(" 4  Change project title")
+    print(" 5  Archive project")
 
+    
+
+    answer = input()
+    while not (answer.lower() == "menu" or (answer.isnumeric() and int(answer) in range(1,6))):
+        print("That is not a valid input, you fool!")
+        answer = input()
+    if answer == "menu":
+        return 
 
