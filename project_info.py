@@ -39,7 +39,7 @@ def display_project_info_detailed(project):
     start_date_dateobj = text_to_date(start_date)
     if date.today() == start_date_dateobj:
         avg_words_so_far = current_wc
-    else: avg_words_so_far = int(current_wc/((date.today() - text_to_date(start_date)))) 
+    else: avg_words_so_far = int(current_wc/((date.today() - text_to_date(start_date)).days)) 
 
     print("Avg words/day from now:".ljust(23), avg_words_until_deadline)
     print("Avg words/day so far:".ljust(23), avg_words_so_far)

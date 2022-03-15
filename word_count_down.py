@@ -49,7 +49,7 @@ def start(connection, cursor):
     return start(connection, cursor)
 
 
-def init_projects_table(cursor):
+def init_projects_table(cursor): #TODO: change 'name' -> 'title'. Why on earth would I call it "name"...
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS projects (
         ID INTEGER PRIMARY KEY AUTOINCREMENT,
