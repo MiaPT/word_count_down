@@ -1,4 +1,5 @@
 import keyboard
+from datetime import datetime, date
 from project_info import *
 from create_project import *
 
@@ -30,8 +31,8 @@ def manage_projects(connection, cursor, projects):
 
 def update_project(connection, cursor, project):
     #TODO: entering nothing when updating the project should be possible, and should cause no changes. This is a temporary solution.
+    #TODO: after updating a project, the updated values should be displayed on the overview of the projects. Currently, the program must restart
     display_project_info_detailed(project)
-    print(type(project))
 
     print("Do you want to update or edit this project?\nEnter the corresponding number, or write 'menu' to go back\n")
     print(" 1  Update current word count")
@@ -46,9 +47,18 @@ def update_project(connection, cursor, project):
         answer = input()
 
     if answer == "1":
-        print("The currently registered wordcount is", project['current_word_count'], "\nWhat is the new word count?")
+        current_wc =  project['current_word_count']
+        print("The currently registered wordcount is", current_wc, "\nWhat is the new word count?")
+
         new_wc = enter_wordcount()
-        #TODO: update wc in db
+        words_today = int(new_wc) - current_wc
+        last_updated = date_to_text(date.today())
+        new_values =  (new_wc, words_today, last_updated, project['ID'])
+
+        cursor.executemany("UPDATE projects SET current_word_count = ?, words_today = ?, last_updated = ? WHERE ID = ?", (new_values,))
+        connection.commit()    
+
+        
 
     elif answer == "2":
         print("The word count goal for this project is", project['word_count_goal'], "\nWhat is the new word count goal?")
@@ -57,11 +67,11 @@ def update_project(connection, cursor, project):
 
     elif answer == "3":
         print("The current deadline is", project['deadline'], "\nWhat is the new deadline?")
-        date = enter_date()
+        new_date = enter_date()
         start_date = project['start_date']
-        while date < text_to_date(start_date):
+        while new_date < text_to_date(start_date):
             print("The deadline can't be before the start date ("+start_date+")")
-            date = enter_date()
+            new_date = enter_date()
         #TODO: update deadline in db
 
         
