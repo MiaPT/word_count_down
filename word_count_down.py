@@ -2,8 +2,7 @@ import sqlite3
 import pathlib
 from colorama import init
 from project_info import *
-from create_project import create_project
-from manage_projects import manage_projects
+from manage_projects import manage_projects, create_project
 
 def main():
     init()
