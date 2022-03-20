@@ -1,7 +1,5 @@
 from datetime import datetime, date
-#functions that were previously in create_project should be moved here, and must work for both creating and editing project properties
-
-
+from project_info import text_to_date
 
 def name_project(allow_blank=False): 
     print("Give a name to your project:")
@@ -53,10 +51,3 @@ def startdate(allow_blank=False):
     return enter_date(allow_blank)
 
 
-
-
-def date_to_text(dt):
-    return dt.strftime("%d-%m-%Y")
-
-def text_to_date(text):
-    return datetime.strptime(text, "%d-%m-%Y").date()
