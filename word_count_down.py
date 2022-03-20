@@ -1,11 +1,12 @@
 import sqlite3
 import pathlib
 from colorama import init
+
+import config
 import project_info
 from manage_projects import manage_projects, create_project
 
 def main():
-    init()
     connection, cursor = init_db()
     start(connection, cursor)
 
@@ -24,23 +25,24 @@ def init_db():
 
 
 def start(connection, cursor):
-    projects = project_info.get_projects(cursor, "ongoing")
+
+    config.projects = project_info.get_projects(cursor, "ongoing")
 
     print("\nWelcome to WordCount(Down)\n")
 
-    if projects:
+    if config.projects:
         print("These are your ongoing projects: \n")
-        project_info.display_project_names(projects)
+        project_info.display_project_names()
         print("\nType 'view' to view and update existing projects")
 
     print("Type 'add' to add a new writing project\nType 'quit' to exit the program")
 
     answer = input()
     if answer == "view":
-        if not projects: 
+        if not config.projects: 
             print("\nSneaky. You have to add a project before you can view it.\n")
             return start(connection, cursor)
-        manage_projects(connection, cursor, projects)
+        manage_projects(connection, cursor)
     elif answer == "add":
         create_project(connection, cursor)
     elif answer.lower() == "quit":

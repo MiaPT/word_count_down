@@ -1,5 +1,6 @@
 import keyboard
 from datetime import datetime, date
+import config
 import project_info
 
 
@@ -55,12 +56,12 @@ def set_startdate(allow_blank=False):
 
 
 
-def manage_projects(connection, cursor, projects):
-    project_ids = list(map((lambda x: x['ID']), projects))
+def manage_projects(connection, cursor):
+    project_ids = list(map((lambda x: x['ID']), config.projects))
 
 
     print("\nYour projects: ")
-    for p in projects:
+    for p in config.projects:
         project_info.display_project_info_minimal(p)
 
     print("To update a project/view more details about your progress, enter the ID of the project.")
@@ -71,14 +72,13 @@ def manage_projects(connection, cursor, projects):
         answer = input()
     if answer == "menu":
         return 
-    project = list(filter(lambda x: x['ID'] == int(answer), projects))[0]
+    project = list(filter(lambda x: x['ID'] == int(answer), config.projects))[0]
     update_project(connection, cursor, project)
-    return manage_projects(connection, cursor, projects)
+    return manage_projects(connection, cursor)
     
 
 
 def update_project(connection, cursor, project):
-    #TODO: after updating a project, the updated values should be displayed on the overview of the projects. Currently, the program must restart
     project_info.display_project_info_detailed(project)
 
     print("Do you want to update or edit this project?\nEnter the corresponding number, or write 'menu' to go back\n")
@@ -106,8 +106,8 @@ def update_project(connection, cursor, project):
         new_values =  (new_wc, words_today, last_updated, project['ID'])
 
         cursor.executemany("UPDATE projects SET current_word_count = ?, words_today = ?, last_updated = ? WHERE ID = ?", (new_values,))
-        connection.commit()    
-
+        connection.commit()
+        config.projects = project_info.get_projects(cursor, "ongoing")
         
 
     elif answer == "2":

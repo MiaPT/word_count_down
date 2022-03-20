@@ -1,13 +1,14 @@
 import sqlite3
 from colorama import Fore, Style
 from datetime import datetime, date
+import config
 
 
 def get_projects(cursor, status):
     return cursor.execute("SELECT * FROM projects WHERE status=?", (status,)).fetchall()
 
-def display_project_names(projects):
-    for p in projects:
+def display_project_names():
+    for p in config.projects:
         print(p['name'])
 
 def display_project_info_minimal(project):
