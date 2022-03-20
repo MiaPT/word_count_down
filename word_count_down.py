@@ -1,7 +1,7 @@
 import sqlite3
 import pathlib
 from colorama import init
-from project_info import *
+import project_info
 from manage_projects import manage_projects, create_project
 
 def main():
@@ -24,13 +24,13 @@ def init_db():
 
 
 def start(connection, cursor):
-    projects = get_projects(cursor, "ongoing")
+    projects = project_info.get_projects(cursor, "ongoing")
 
     print("\nWelcome to WordCount(Down)\n")
 
     if projects:
         print("These are your ongoing projects: \n")
-        display_project_names(projects)
+        project_info.display_project_names(projects)
         print("\nType 'view' to view and update existing projects")
 
     print("Type 'add' to add a new writing project\nType 'quit' to exit the program")

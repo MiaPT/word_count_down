@@ -47,6 +47,8 @@ def display_project_info_detailed(project):
     print("")
     
 
+
+#are these are a bit out of place in this file or am I overthinking it?
 def days_diff(text_date1, text_date2):
     date1 = text_to_date(text_date1)
     date2 = text_to_date(text_date2)

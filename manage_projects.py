@@ -1,6 +1,7 @@
 import keyboard
 from datetime import datetime, date
-from project_info import *
+import project_info
+
 
 
 def name_project(allow_blank=False): 
@@ -33,13 +34,13 @@ def enter_date(allow_blank):
             return
         return date.today()
     try:
-        dt = text_to_date(inp)
+        dt = project_info.text_to_date(inp)
     except:
         print("Wrong format or invalid date, try again:")
         dt = enter_date(allow_blank)
     return dt    
 
-def deadline(allow_blank=False):
+def set_deadline(allow_blank=False):
     deadline = enter_date(allow_blank)
     if not deadline: 
         return
@@ -49,7 +50,7 @@ def deadline(allow_blank=False):
     return deadline
 
 
-def startdate(allow_blank=False):
+def set_startdate(allow_blank=False):
     return enter_date(allow_blank)
 
 
@@ -60,7 +61,7 @@ def manage_projects(connection, cursor, projects):
 
     print("\nYour projects: ")
     for p in projects:
-        display_project_info_minimal(p)
+        project_info.display_project_info_minimal(p)
 
     print("To update a project/view more details about your progress, enter the ID of the project.")
     print("To return to the main menu, write 'menu'")
@@ -78,7 +79,7 @@ def manage_projects(connection, cursor, projects):
 
 def update_project(connection, cursor, project):
     #TODO: after updating a project, the updated values should be displayed on the overview of the projects. Currently, the program must restart
-    display_project_info_detailed(project)
+    project_info.display_project_info_detailed(project)
 
     print("Do you want to update or edit this project?\nEnter the corresponding number, or write 'menu' to go back\n")
     print(" 1  Update current word count")
@@ -101,7 +102,7 @@ def update_project(connection, cursor, project):
             new_wc = current_wc
 
         words_today = int(new_wc) - current_wc
-        last_updated = date_to_text(date.today())
+        last_updated = project_info.date_to_text(date.today())
         new_values =  (new_wc, words_today, last_updated, project['ID'])
 
         cursor.executemany("UPDATE projects SET current_word_count = ?, words_today = ?, last_updated = ? WHERE ID = ?", (new_values,))
@@ -116,14 +117,14 @@ def update_project(connection, cursor, project):
 
     elif answer == "3":
         print("The current deadline is", project['deadline'], "\nWhat is the new deadline?")
-        new_date = deadline(allow_blank=True)
+        new_date = set_deadline(allow_blank=True)
         if not new_date:
             print("No changes made")
             return
         start_date = project['start_date']
         while new_date < text_to_date(start_date):
             print("The deadline can't be before the start date ("+start_date+")")
-            new_date = deadline(allow_blank=True)
+            new_date = set_deadline(allow_blank=True)
         #TODO: update deadline in db
 
         
@@ -160,18 +161,18 @@ def create_project(connection, cursor):
     current_wordcount = enter_wordcount()
 
     print("What is the deadline for this project? (DD-MM-YYYY)\n(if you don't enter a date, today will be the deadline, and that will be quite stressful!)")
-    deadline = deadline()
+    deadline = set_deadline()
     print("Enter the start date for this project (DD-MM-YYYY) (leave it blank to put today as the start date)")
-    start_date = startdate()
+    start_date = set_startdate()
 
     while start_date > deadline:
         print("You can't set the start date after the deadline!!")
-        start_date = startdate()
+        start_date = set_startdate()
     if start_date == date.today():
         words_today = current_wordcount
     else: words_today = 0
-    today = date_to_text(date.today())
-    project_values = (name, wordcount, current_wordcount, words_today, date_to_text(deadline), date_to_text(start_date), today, "ongoing")
+    today = project_info.date_to_text(date.today())
+    project_values = (name, wordcount, current_wordcount, words_today, project_info.date_to_text(deadline), project_info.date_to_text(start_date), today, "ongoing")
 
     cursor.executemany("INSERT INTO projects VALUES (null,?,?,?,?,?,?,?,?)", (project_values,))
     connection.commit()
