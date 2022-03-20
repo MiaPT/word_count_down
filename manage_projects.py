@@ -4,8 +4,6 @@ from project_info import *
 import set_project_property
 
 
-
-
 def manage_projects(connection, cursor, projects):
     project_ids = list(map((lambda x: x['ID']), projects))
 
@@ -26,13 +24,9 @@ def manage_projects(connection, cursor, projects):
     update_project(connection, cursor, project)
     return manage_projects(connection, cursor, projects)
     
-    """if not (answer.isnumeric() and int(answer) in range(1,len(projects)+1)):
-        print("That's not a valid input!!!>:(")
-        return manage_projects(connection, cursor, projects)"""
 
 
 def update_project(connection, cursor, project):
-    #TODO: entering nothing when updating the project should be possible, and should cause no changes. This is a temporary solution.
     #TODO: after updating a project, the updated values should be displayed on the overview of the projects. Currently, the program must restart
     display_project_info_detailed(project)
 

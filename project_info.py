@@ -2,8 +2,6 @@ import sqlite3
 from colorama import Fore, Style
 from datetime import datetime, date
 
-# TODO: give this file a better name
-# here are the functions that fetch, calculate and display information about projects
 
 def get_projects(cursor, status):
     return cursor.execute("SELECT * FROM projects WHERE status=?", (status,)).fetchall()
@@ -11,8 +9,6 @@ def get_projects(cursor, status):
 def display_project_names(projects):
     for p in projects:
         print(p['name'])
-
-#def color_text()
 
 def display_project_info_minimal(project):
     days_left = (text_to_date(project['deadline']) - date.today()).days
