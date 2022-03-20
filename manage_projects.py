@@ -1,7 +1,57 @@
 import keyboard
 from datetime import datetime, date
 from project_info import *
-import set_project_property
+
+
+def name_project(allow_blank=False): 
+    print("Give a name to your project:")
+    name = input()
+    name = ' '.join(name.split())
+    if name == "":
+        if allow_blank:
+            return 
+        print("You can't skip this step! Just write something weird, you can change it later.")
+        name = name_project()
+    return name
+
+
+def enter_wordcount(allow_blank=False):
+    wordcount = input()
+    if not wordcount.isnumeric():
+        if not wordcount and allow_blank:
+            return
+        print("The word count has to be a whole number, you dummy!")
+        wordcount = enter_wordcount()
+    return wordcount
+
+
+
+def enter_date(allow_blank):
+    inp = input()
+    if inp == "":
+        if allow_blank:
+            return
+        return date.today()
+    try:
+        dt = text_to_date(inp)
+    except:
+        print("Wrong format or invalid date, try again:")
+        dt = enter_date(allow_blank)
+    return dt    
+
+def deadline(allow_blank=False):
+    deadline = enter_date(allow_blank)
+    if not deadline: 
+        return
+    if deadline < date.today():
+        print("You can't set the deadline in the past, silly!\n")
+        deadline = set_deadline()
+    return deadline
+
+
+def startdate(allow_blank=False):
+    return enter_date(allow_blank)
+
 
 
 def manage_projects(connection, cursor, projects):
@@ -46,7 +96,7 @@ def update_project(connection, cursor, project):
         current_wc =  project['current_word_count']
         print("The currently registered wordcount is", current_wc, "\nWhat is the new word count?")
 
-        new_wc = set_project_property.enter_wordcount(allow_blank=True)
+        new_wc = enter_wordcount(allow_blank=True)
         if not new_wc:
             new_wc = current_wc
 
@@ -61,25 +111,25 @@ def update_project(connection, cursor, project):
 
     elif answer == "2":
         print("The word count goal for this project is", project['word_count_goal'], "\nWhat is the new word count goal?")
-        new_wc = set_project_property.enter_wordcount(allow_blank=True)
+        new_wc = enter_wordcount(allow_blank=True)
         #TODO: update wc goal in db
 
     elif answer == "3":
         print("The current deadline is", project['deadline'], "\nWhat is the new deadline?")
-        new_date = set_project_property.deadline(allow_blank=True)
+        new_date = deadline(allow_blank=True)
         if not new_date:
             print("No changes made")
             return
         start_date = project['start_date']
         while new_date < text_to_date(start_date):
             print("The deadline can't be before the start date ("+start_date+")")
-            new_date = set_project_property.deadline(allow_blank=True)
+            new_date = deadline(allow_blank=True)
         #TODO: update deadline in db
 
         
     elif answer == "4":
         print("The current title is", project['name'], "\nWhat is the new title?")
-        new_title = set_project_property.name_project(allow_blank=True)
+        new_title = name_project(allow_blank=True)
         if new_title:
             pass
             #TODO: update title
@@ -101,22 +151,22 @@ def update_project(connection, cursor, project):
 
 
 def create_project(connection, cursor):
-    name = set_project_property.name_project()
+    name = name_project()
 
     print("What is the word count goal for this project?")
-    wordcount = set_project_property.enter_wordcount()
+    wordcount = enter_wordcount()
 
     print("What is the current word count for the project?")
-    current_wordcount = set_project_property.enter_wordcount()
+    current_wordcount = enter_wordcount()
 
     print("What is the deadline for this project? (DD-MM-YYYY)\n(if you don't enter a date, today will be the deadline, and that will be quite stressful!)")
-    deadline = set_project_property.deadline()
+    deadline = deadline()
     print("Enter the start date for this project (DD-MM-YYYY) (leave it blank to put today as the start date)")
-    start_date = set_project_property.startdate()
+    start_date = startdate()
 
     while start_date > deadline:
         print("You can't set the start date after the deadline!!")
-        start_date = set_project_property.startdate()
+        start_date = startdate()
     if start_date == date.today():
         words_today = current_wordcount
     else: words_today = 0
