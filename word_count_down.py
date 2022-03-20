@@ -26,7 +26,7 @@ def init_db():
 
 def start(connection, cursor):
 
-    shared.projects = project_info.get_projects(cursor, "ongoing")
+    shared.projects = project_info.get_projects(cursor)
 
     print("\nWelcome to WordCount(Down)\n")
 

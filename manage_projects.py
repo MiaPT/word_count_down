@@ -107,7 +107,7 @@ def update_project(connection, cursor, project):
 
         cursor.executemany("UPDATE projects SET current_word_count = ?, words_today = ?, last_updated = ? WHERE ID = ?", (new_values,))
         connection.commit()
-        shared.projects = project_info.get_projects(cursor, "ongoing")
+        shared.projects = project_info.get_projects(cursor)
         
 
     elif answer == "2":

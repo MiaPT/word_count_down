@@ -4,7 +4,7 @@ from datetime import datetime, date
 import shared
 
 
-def get_projects(cursor, status):
+def get_projects(cursor, status="ongoing"):
     return cursor.execute("SELECT * FROM projects WHERE status=?", (status,)).fetchall()
 
 def display_project_names():
