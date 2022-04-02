@@ -4,7 +4,6 @@ import shared
 import project_info
 
 
-
 def name_project(allow_blank=False): 
     print("Give a name to your project:")
     name = input()
@@ -13,7 +12,7 @@ def name_project(allow_blank=False):
         if allow_blank:
             return 
         print("You can't skip this step! Just write something weird, you can change it later.")
-        name = name_project()
+        name = name_project(allow_blank)
     return name
 
 
@@ -23,7 +22,7 @@ def enter_wordcount(allow_blank=False):
         if not wordcount and allow_blank:
             return
         print("The word count has to be a whole number, you dummy!")
-        wordcount = enter_wordcount()
+        wordcount = enter_wordcount(allow_blank)
     return wordcount
 
 
@@ -41,13 +40,14 @@ def enter_date(allow_blank):
         dt = enter_date(allow_blank)
     return dt    
 
-def set_deadline(allow_blank=False):
+def set_deadline(allow_blank=False, allow_past=False):
     deadline = enter_date(allow_blank)
     if not deadline: 
         return
     if deadline < date.today():
-        print("You can't set the deadline in the past, silly!\n")
-        deadline = set_deadline()
+        if not allow_past:
+            print("You can't set the deadline in the past, silly!\n")
+            deadline = set_deadline()
     return deadline
 
 
@@ -99,42 +99,61 @@ def update_project(connection, cursor, project):
 
         new_wc = enter_wordcount(allow_blank=True)
         if not new_wc:
-            new_wc = current_wc
-
+            print("No changes made")
+            return update_project(connection, cursor, project)
+        
         words_today = int(new_wc) - current_wc
         last_updated = project_info.date_to_text(date.today())
         new_values =  (new_wc, words_today, last_updated, project['ID'])
 
         cursor.executemany("UPDATE projects SET current_word_count = ?, words_today = ?, last_updated = ? WHERE ID = ?", (new_values,))
         connection.commit()
-        shared.projects = project_info.get_projects(cursor)
+
         
 
     elif answer == "2":
         print("The word count goal for this project is", project['word_count_goal'], "\nWhat is the new word count goal?")
         new_wc = enter_wordcount(allow_blank=True)
-        #TODO: update wc goal in db
+        if not new_wc:
+            print("No changes made")
+            return update_project(connection, cursor, project)
 
+        new_values =  (new_wc, project['ID'])
+        cursor.executemany("UPDATE projects SET word_count_goal = ? WHERE ID = ?", (new_values,))
+        connection.commit()
+
+
+    #TODO: find a better structure for this
     elif answer == "3":
         print("The current deadline is", project['deadline'], "\nWhat is the new deadline?")
-        new_date = set_deadline(allow_blank=True)
+        new_date = set_deadline(allow_blank=True, allow_past=True)
         if not new_date:
             print("No changes made")
-            return
+            return update_project(connection, cursor, project)
         start_date = project['start_date']
-        while new_date < text_to_date(start_date):
+        while new_date < project_info.text_to_date(start_date):
             print("The deadline can't be before the start date ("+start_date+")")
-            new_date = set_deadline(allow_blank=True)
-        #TODO: update deadline in db
+            new_date = set_deadline(allow_blank=True, allow_past=True) 
+            if not new_date:
+                print("No changes made")
+                return update_project(connection, cursor, project)
+        
+        new_values =  (project_info.date_to_text(new_date), project['ID'])
+        cursor.executemany("UPDATE projects SET deadline = ? WHERE ID = ?", (new_values,))
+        connection.commit()
+  
+
 
         
     elif answer == "4":
         print("The current title is", project['name'], "\nWhat is the new title?")
         new_title = name_project(allow_blank=True)
-        if new_title:
-            pass
-            #TODO: update title
-        return
+        if not new_title:
+            print("No changes made")
+            return update_project(connection, cursor, project)
+
+        #TODO: update title
+        
     
     elif answer == "5":
         print("""Are you sure you want to archive this project? (y/n)\n(It will no longer show up in the normal list of projects, 
@@ -147,6 +166,10 @@ def update_project(connection, cursor, project):
 
     if answer == "menu":
         return 
+    
+    shared.projects = project_info.get_projects(cursor)
+    project = list(filter(lambda x: x['ID'] == project['ID'], shared.projects))[0]
+    return update_project(connection, cursor, project)
 
 
 

@@ -44,7 +44,7 @@ def display_project_info_detailed(project):
     print("Deadline:".ljust(20), project['deadline'])
     print("Word count goal:".ljust(20), project['word_count_goal']) 
     print("Start date:".ljust(20), start_date)
-    print("Last updated".ljust(20), project['last_updated'])
+    print("Last registered progress:".ljust(27), project['last_updated'])
     print("")
     
 

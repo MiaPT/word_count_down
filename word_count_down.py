@@ -46,6 +46,7 @@ def start(connection, cursor):
     elif answer == "add":
         create_project(connection, cursor)
     elif answer.lower() == "quit":
+        connection.close()
         quit()
     return start(connection, cursor)
 
