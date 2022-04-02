@@ -7,9 +7,9 @@ import shared
 def get_projects(cursor, status="ongoing"):
     return cursor.execute("SELECT * FROM projects WHERE status=?", (status,)).fetchall()
 
-def display_project_names():
+def display_project_titles():
     for p in shared.projects:
-        print(p['name'])
+        print(p['title'])
 
 def display_project_info_minimal(project):
     days_left = (text_to_date(project['deadline']) - date.today()).days
@@ -17,7 +17,7 @@ def display_project_info_minimal(project):
     words_left = project['word_count_goal'] - current_wc
 
     print("\nProject ID:".ljust(23), project['ID'])
-    print("Project title:".ljust(23), project['name'])
+    print("Project title:".ljust(23), project['title'])
     print("Current word count:".ljust(23), current_wc)
     print("Words left to write:".ljust(23), words_left)
     print("Days until deadline:".ljust(23), days_left)

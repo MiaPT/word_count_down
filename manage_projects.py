@@ -5,7 +5,7 @@ import project_info
 
 
 def name_project(allow_blank=False): 
-    print("Give a name to your project:")
+    print("Give a title to your project:")
     name = input()
     name = ' '.join(name.split())
     if name == "":
@@ -146,7 +146,7 @@ def update_project(connection, cursor, project):
 
         
     elif answer == "4":
-        print("The current title is", project['name'], "\nWhat is the new title?")
+        print("The current title is", project['title'], "\nWhat is the new title?")
         new_title = name_project(allow_blank=True)
         if not new_title:
             print("No changes made")

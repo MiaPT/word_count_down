@@ -32,7 +32,7 @@ def start(connection, cursor):
 
     if shared.projects:
         print("These are your ongoing projects: \n")
-        project_info.display_project_names()
+        project_info.display_project_titles()
         print("\nType 'view' to view and update existing projects")
 
     print("Type 'add' to add a new writing project\nType 'quit' to exit the program")
@@ -51,11 +51,11 @@ def start(connection, cursor):
     return start(connection, cursor)
 
 
-def init_projects_table(cursor): #TODO: change 'name' -> 'title'. Why on earth would I call it "name"...
+def init_projects_table(cursor): 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS projects (
         ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT, 
+        title TEXT, 
         word_count_goal INTEGER,
         current_word_count INTEGER,
         words_today INTEGER,
