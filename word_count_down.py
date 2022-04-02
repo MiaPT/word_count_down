@@ -28,7 +28,7 @@ def start(connection, cursor):
 
     shared.projects = project_info.get_projects(cursor)
 
-    print("\nWelcome to WordCount(Down)\n")
+    print("\n~~~~~ Welcome to WordCount(Down) ~~~~~\n")
 
     if shared.projects:
         print("These are your ongoing projects: \n")

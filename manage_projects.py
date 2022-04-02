@@ -63,8 +63,7 @@ def manage_projects(connection, cursor):
     print("\nYour projects: ")
     for p in shared.projects:
         project_info.display_project_info_minimal(p)
-
-    print("To update a project/view more details about your progress, enter the ID of the project.")
+    print("\nTo update a project/view more details about your progress, enter the ID of the project.")
     print("To return to the main menu, write 'menu'")
     answer = input()
     while not (answer.lower() == "menu" or (answer.isnumeric() and int(answer) in project_ids)):
@@ -86,7 +85,7 @@ def update_project(connection, cursor, project):
     print(" 2  Update word count goal")
     print(" 3  Change project deadline")
     print(" 4  Change project title")
-    print(" 5  Archive project")
+    print(" 5  Archive or delete project")
     
     answer = input()
     while not (answer.lower() == "menu" or (answer.isnumeric() and int(answer) in range(1,6))):
@@ -151,17 +150,33 @@ def update_project(connection, cursor, project):
         if not new_title:
             print("No changes made")
             return update_project(connection, cursor, project)
-
-        #TODO: update title
+        
+        new_values =  (new_title, project['ID'])
+        print(type(new_values))
+        cursor.executemany("UPDATE projects SET title = ? WHERE ID = ?", (new_values,))
+        connection.commit()
         
     
     elif answer == "5":
-        print("""Are you sure you want to archive this project? (y/n)\n(It will no longer show up in the normal list of projects, 
-                but you'll be able to access the archive and change the project status)""")
+        print("""To archive this project, type 'archive' (this can be undone later).
+        \nTo permanently delete this project, type 'delete'.
+        \nTo go back without making changes, type anything else or leave input field blank""")
+
         inp = input()
-        while inp.lower() != "y" and inp.lower() != "n":
-            inp = input()
-        #TODO: update project status
+        if inp.lower() not in ['archive', 'delete']:
+            return update_project(connection, cursor, project)
+        
+        elif inp.lower() == 'archive':
+            new_values =  ("archived", project['ID'])
+            cursor.executemany("UPDATE projects SET status = ? WHERE ID = ?", (new_values,))
+            connection.commit()
+            shared.projects = project_info.get_projects(cursor)
+            return 
+        
+        elif inp.lower() == 'delete':
+            delete_project(connection, cursor, project['ID'])
+            shared.projects = project_info.get_projects(cursor)
+            return 
 
 
     if answer == "menu":
@@ -172,6 +187,11 @@ def update_project(connection, cursor, project):
     return update_project(connection, cursor, project)
 
 
+def delete_project(connection, cursor, project_id):
+    print(type(project_id))
+    values = (project_id,)
+    cursor.executemany("DELETE FROM projects WHERE ID = ?", (values,))
+    connection.commit()
 
 
 def create_project(connection, cursor):
