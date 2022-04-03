@@ -65,16 +65,50 @@ def manage_projects(connection, cursor):
         project_info.display_project_info_minimal(p)
     print("\nTo update a project/view more details about your progress, enter the ID of the project.")
     print("To return to the main menu, write 'menu'")
+    print("To view the archive, type 'archive'")
     answer = input()
-    while not (answer.lower() == "menu" or (answer.isnumeric() and int(answer) in project_ids)):
+    while not (answer.lower() in ["menu", "archive"] or (answer.isnumeric() and int(answer) in project_ids)):
         print("That is not a valid input, you fool!")
         answer = input()
     if answer == "menu":
         return 
-    project = list(filter(lambda x: x['ID'] == int(answer), shared.projects))[0]
-    update_project(connection, cursor, project)
+    elif answer == "archive":
+        manage_archive(connection, cursor)
+
+    else:
+        project = list(filter(lambda x: x['ID'] == int(answer), shared.projects))[0]
+        update_project(connection, cursor, project)
     return manage_projects(connection, cursor)
-    
+
+
+def manage_archive(connection, cursor):
+    archived_projects = project_info.get_projects(cursor, status="archived")
+    if not archived_projects:
+        print("\nYou don't have any archived projects.\nPress enter to return.")
+        inp = input()
+        return 
+
+    print("Your archived projects:")
+    for project in archived_projects:
+        project_info.display_project_info_minimal(project)
+    print("\nIf you want to unarchive any of these projects, type the ID of the project")
+    print("To return to the previous menu, type 'menu'")
+
+    project_ids = list(map((lambda x: x['ID']), archived_projects))
+    answer = input()
+    while not (answer.lower() == "menu"  or (answer.isnumeric() and int(answer) in project_ids)):
+        print("That is not a valid input, you fool!")
+        answer = input()
+    if answer == "menu":
+        return
+    else:
+        new_values =  ("ongoing", answer)
+        cursor.executemany("UPDATE projects SET status = ? WHERE ID = ?", (new_values,))
+        connection.commit()
+        shared.projects = project_info.get_projects(cursor)
+        return manage_archive(connection, cursor)
+
+
 
 
 def update_project(connection, cursor, project):
