@@ -5,8 +5,8 @@ import shared
 
 separator = "~"*100
 
-def get_projects(cursor, status="ongoing"):
-    return cursor.execute("SELECT * FROM projects WHERE status=?", (status,)).fetchall()
+def get_projects(status="ongoing"):
+    return shared.cursor.execute("SELECT * FROM projects WHERE status=?", (status,)).fetchall()
 
 def display_project_titles():
     for p in shared.projects:

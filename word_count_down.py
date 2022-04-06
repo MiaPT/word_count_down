@@ -1,32 +1,30 @@
 import sqlite3
 import pathlib
-from colorama import init
 
 import shared
 import project_info
 from manage_projects import manage_projects, create_project
 
 def main():
-    connection, cursor = init_db()
-    start(connection, cursor)
+    init_db()
+    start()
 
 
 def init_db():
     p = pathlib.Path("dbs/")
     p.mkdir(exist_ok=True)
 
-    connection = sqlite3.connect('dbs/projects.db')
-    connection.row_factory = sqlite3.Row
-    cursor = connection.cursor()
+    shared.connection = sqlite3.connect('dbs/projects.db')
+    shared.connection.row_factory = sqlite3.Row
+    shared.cursor = shared.connection.cursor()
 
-    init_projects_table(cursor)
-    return (connection, cursor)
-
+    init_projects_table()
 
 
-def start(connection, cursor):
 
-    shared.projects = project_info.get_projects(cursor)
+def start():
+
+    shared.projects = project_info.get_projects()
 
     print("\n~~~~~ Welcome to WordCount(Down) ~~~~~\n")
 
@@ -41,18 +39,18 @@ def start(connection, cursor):
     if answer == "view":
         if not shared.projects: 
             print("\nSneaky. You have to add a project before you can view it.\n")
-            return start(connection, cursor)
-        manage_projects(connection, cursor)
+            return start()
+        manage_projects()
     elif answer == "add":
-        create_project(connection, cursor)
+        create_project()
     elif answer.lower() == "quit":
-        connection.close()
+        shared.connection.close()
         quit()
-    return start(connection, cursor)
+    return start()
 
 
-def init_projects_table(cursor): 
-    cursor.execute("""
+def init_projects_table(): 
+    shared.cursor.execute("""
     CREATE TABLE IF NOT EXISTS projects (
         ID INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT, 

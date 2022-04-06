@@ -16,6 +16,7 @@ def name_project(allow_blank=False):
     return name
 
 
+
 def enter_wordcount(allow_blank=False):
     wordcount = input()
     if not wordcount.isnumeric():
@@ -40,6 +41,7 @@ def enter_date(allow_blank):
         dt = enter_date(allow_blank)
     return dt    
 
+
 def set_deadline(allow_blank=False, allow_past=False):
     deadline = enter_date(allow_blank)
     if not deadline: 
@@ -56,7 +58,7 @@ def set_startdate(allow_blank=False):
 
 
 
-def manage_projects(connection, cursor):
+def manage_projects():
     project_ids = list(map((lambda x: x['ID']), shared.projects))
 
 
@@ -73,16 +75,17 @@ def manage_projects(connection, cursor):
     if answer == "menu":
         return 
     elif answer == "archive":
-        manage_archive(connection, cursor)
+        manage_archive()
 
     else:
         project = list(filter(lambda x: x['ID'] == int(answer), shared.projects))[0]
-        update_project(connection, cursor, project)
-    return manage_projects(connection, cursor)
+        update_project(project)
+    return manage_projects()
 
 
-def manage_archive(connection, cursor):
-    archived_projects = project_info.get_projects(cursor, status="archived")
+
+def manage_archive():
+    archived_projects = project_info.get_projects(status="archived")
     if not archived_projects:
         print("\nYou don't have any archived projects.\nPress enter to return.")
         inp = input()
@@ -103,15 +106,15 @@ def manage_archive(connection, cursor):
         return
     else:
         new_values =  ("ongoing", answer)
-        cursor.executemany("UPDATE projects SET status = ? WHERE ID = ?", (new_values,))
-        connection.commit()
-        shared.projects = project_info.get_projects(cursor)
-        return manage_archive(connection, cursor)
+        shared.cursor.executemany("UPDATE projects SET status = ? WHERE ID = ?", (new_values,))
+        shared.connection.commit()
+        shared.projects = project_info.get_projects()
+        return manage_archive()
 
 
 
 
-def update_project(connection, cursor, project):
+def update_project(project):
     project_info.display_project_info_detailed(project)
 
     print("Do you want to update or edit this project?\nEnter the corresponding number, or write 'menu' to go back\n")
@@ -133,14 +136,14 @@ def update_project(connection, cursor, project):
         new_wc = enter_wordcount(allow_blank=True)
         if not new_wc:
             print("No changes made")
-            return update_project(connection, cursor, project)
+            return update_project(project)
         
         words_today = int(new_wc) - current_wc
         last_updated = project_info.date_to_text(date.today())
         new_values =  (new_wc, words_today, last_updated, project['ID'])
 
-        cursor.executemany("UPDATE projects SET current_word_count = ?, words_today = ?, last_updated = ? WHERE ID = ?", (new_values,))
-        connection.commit()
+        shared.cursor.executemany("UPDATE projects SET current_word_count = ?, words_today = ?, last_updated = ? WHERE ID = ?", (new_values,))
+        shared.connection.commit()
 
         
 
@@ -149,33 +152,31 @@ def update_project(connection, cursor, project):
         new_wc = enter_wordcount(allow_blank=True)
         if not new_wc:
             print("No changes made")
-            return update_project(connection, cursor, project)
+            return update_project(project)
 
         new_values =  (new_wc, project['ID'])
-        cursor.executemany("UPDATE projects SET word_count_goal = ? WHERE ID = ?", (new_values,))
-        connection.commit()
+        shared.cursor.executemany("UPDATE projects SET word_count_goal = ? WHERE ID = ?", (new_values,))
+        shared.connection.commit()
 
 
-    #TODO: find a better structure for this
     elif answer == "3":
         print("The current deadline is", project['deadline'], "\nWhat is the new deadline?")
         new_date = set_deadline(allow_blank=True, allow_past=True)
         if not new_date:
             print("No changes made")
-            return update_project(connection, cursor, project)
+            return update_project(project)
         start_date = project['start_date']
         while new_date < project_info.text_to_date(start_date):
             print("The deadline can't be before the start date ("+start_date+")")
             new_date = set_deadline(allow_blank=True, allow_past=True) 
             if not new_date:
                 print("No changes made")
-                return update_project(connection, cursor, project)
+                return update_project(project)
         
         new_values =  (project_info.date_to_text(new_date), project['ID'])
-        cursor.executemany("UPDATE projects SET deadline = ? WHERE ID = ?", (new_values,))
-        connection.commit()
+        shared.cursor.executemany("UPDATE projects SET deadline = ? WHERE ID = ?", (new_values,))
+        shared.connection.commit()
   
-
 
         
     elif answer == "4":
@@ -183,12 +184,12 @@ def update_project(connection, cursor, project):
         new_title = name_project(allow_blank=True)
         if not new_title:
             print("No changes made")
-            return update_project(connection, cursor, project)
+            return update_project(project)
         
         new_values =  (new_title, project['ID'])
         print(type(new_values))
-        cursor.executemany("UPDATE projects SET title = ? WHERE ID = ?", (new_values,))
-        connection.commit()
+        shared.cursor.executemany("UPDATE projects SET title = ? WHERE ID = ?", (new_values,))
+        shared.connection.commit()
         
     
     elif answer == "5":
@@ -198,37 +199,37 @@ def update_project(connection, cursor, project):
 
         inp = input()
         if inp.lower() not in ['archive', 'delete']:
-            return update_project(connection, cursor, project)
+            return update_project(project)
         
         elif inp.lower() == 'archive':
             new_values =  ("archived", project['ID'])
-            cursor.executemany("UPDATE projects SET status = ? WHERE ID = ?", (new_values,))
-            connection.commit()
-            shared.projects = project_info.get_projects(cursor)
+            shared.cursor.executemany("UPDATE projects SET status = ? WHERE ID = ?", (new_values,))
+            shared.connection.commit()
+            shared.projects = project_info.get_projects()
             return 
         
         elif inp.lower() == 'delete':
-            delete_project(connection, cursor, project['ID'])
-            shared.projects = project_info.get_projects(cursor)
+            delete_project(project['ID'])
+            shared.projects = project_info.get_projects()
             return 
 
 
     if answer == "menu":
         return 
     
-    shared.projects = project_info.get_projects(cursor)
+    shared.projects = project_info.get_projects()
     project = list(filter(lambda x: x['ID'] == project['ID'], shared.projects))[0]
-    return update_project(connection, cursor, project)
+    return update_project(project)
 
 
-def delete_project(connection, cursor, project_id):
+def delete_project(project_id):
     print(type(project_id))
     values = (project_id,)
-    cursor.executemany("DELETE FROM projects WHERE ID = ?", (values,))
-    connection.commit()
+    shared.cursor.executemany("DELETE FROM projects WHERE ID = ?", (values,))
+    shared.connection.commit()
 
 
-def create_project(connection, cursor):
+def create_project():
     name = name_project()
 
     print("What is the word count goal for this project?")
@@ -237,7 +238,8 @@ def create_project(connection, cursor):
     print("What is the current word count for the project?")
     current_wordcount = enter_wordcount()
 
-    print("What is the deadline for this project? (DD-MM-YYYY)\n(if you don't enter a date, today will be the deadline, and that will be quite stressful!)")
+    print("""What is the deadline for this project? (DD-MM-YYYY)
+    \n(if you don't enter a date, today will be the deadline, and that will be quite stressful!)""")
     deadline = set_deadline()
     print("Enter the start date for this project (DD-MM-YYYY) (leave it blank to put today as the start date)")
     start_date = set_startdate()
@@ -249,10 +251,14 @@ def create_project(connection, cursor):
         words_today = current_wordcount
     else: words_today = 0
     today = project_info.date_to_text(date.today())
-    project_values = (name, wordcount, current_wordcount, words_today, project_info.date_to_text(deadline), project_info.date_to_text(start_date), today, "ongoing")
+    project_values = (
+        name, wordcount, current_wordcount, 
+        words_today, project_info.date_to_text(deadline), 
+        project_info.date_to_text(start_date), today, "ongoing"
+    )
 
-    cursor.executemany("INSERT INTO projects VALUES (null,?,?,?,?,?,?,?,?)", (project_values,))
-    connection.commit()
+    shared.cursor.executemany("INSERT INTO projects VALUES (null,?,?,?,?,?,?,?,?)", (project_values,))
+    shared.connection.commit()
 
     print("Your project has been successfully added! You can now view it and register your progress.\n")
 
