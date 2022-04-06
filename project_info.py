@@ -1,5 +1,5 @@
 import sqlite3
-from colorama import Fore, Style
+import colorama
 from datetime import datetime, date
 import shared
 
@@ -52,6 +52,13 @@ def display_project_info_detailed(project):
     print("Last registered progress:".ljust(27), project['last_updated'])
     print(separator)
     
+
+def reset_words_written_today():
+    for project in shared.projects:
+        if text_to_date(project['last_updated']) != date.today():
+            new_values =  (0, project['ID'])
+            shared.cursor.executemany("UPDATE projects SET words_today = ? WHERE ID = ?", (new_values,))
+    shared.connection.commit()
 
 
 #are these are a bit out of place in this file or am I overthinking it?

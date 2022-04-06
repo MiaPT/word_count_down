@@ -10,6 +10,7 @@ def main():
 
 def start():
     shared.projects = project_info.get_projects()
+    project_info.reset_words_written_today()
     print("\n~~~~~ Welcome to WordCount(Down) ~~~~~\n")
 
     if shared.projects:
