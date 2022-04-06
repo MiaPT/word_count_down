@@ -1,31 +1,15 @@
-import sqlite3
-import pathlib
-
 import shared
 import project_info
 from manage_projects import manage_projects, create_project
 
 def main():
-    init_db()
-    start()
-
-
-def init_db():
-    p = pathlib.Path("dbs/")
-    p.mkdir(exist_ok=True)
-
-    shared.connection = sqlite3.connect('dbs/projects.db')
-    shared.connection.row_factory = sqlite3.Row
-    shared.cursor = shared.connection.cursor()
-
     init_projects_table()
+    start()
 
 
 
 def start():
-
     shared.projects = project_info.get_projects()
-
     print("\n~~~~~ Welcome to WordCount(Down) ~~~~~\n")
 
     if shared.projects:
