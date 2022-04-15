@@ -138,7 +138,7 @@ def update_project(project):
             print("No changes made")
             return update_project(project)
         
-        words_today = int(new_wc) - current_wc
+        words_today = max(0, int(new_wc) - current_wc + project['words_today'])
         last_updated = project_info.date_to_text(date.today())
         new_values =  (new_wc, words_today, last_updated, project['ID'])
 

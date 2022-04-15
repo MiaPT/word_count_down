@@ -1,9 +1,11 @@
 import shared
+import colorama
 import project_info
 from manage_projects import manage_projects, create_project
 
 def main():
     init_projects_table()
+    colorama.init()
     start()
 
 

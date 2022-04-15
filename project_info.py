@@ -32,8 +32,10 @@ def display_project_info_minimal(project):
 def display_project_info_detailed(project):
     days_left, current_wc, words_left = get_info_minimal(project)
     start_date = project['start_date']
-    if days_left == 0:
+    deadline_passed = False
+    if days_left <= 0:
         avg_words_until_deadline = words_left
+        deadline_passed = True
     else: avg_words_until_deadline = int(words_left/days_left)
 
     start_date_dateobj = text_to_date(start_date)
@@ -41,10 +43,26 @@ def display_project_info_detailed(project):
         avg_words_so_far = current_wc
     else: avg_words_so_far = int(current_wc/((date.today() - text_to_date(start_date)).days)) 
 
+    color, message = color_and_message(avg_words_so_far, avg_words_until_deadline)
+
     print(separator)
     display_project_info_minimal(project)
     print("Avg words/day from now:".ljust(23), avg_words_until_deadline)
-    print("Avg words/day so far:".ljust(23), avg_words_so_far)
+    print("Avg words/day so far:".ljust(23), color, avg_words_so_far, colorama.Style.RESET_ALL)
+    if words_left <= 0:
+        print("You're done!!<3<3 Maybe it's time to archive this project?:)")
+    elif deadline_passed:
+        print("Hmm, looks like the deadline has passed. If you want to continue working on this project, you should change the deadline.")
+    else: print(message)
+
+    words_written_today = project['words_today']
+    if deadline_passed:
+        words_left_today = words_left
+    else:
+        words_left_today = max(0, int((words_written_today + words_left) / days_left - words_written_today))
+    print(colorama.Fore.LIGHTMAGENTA_EX, "Words written today:".ljust(23), words_written_today)
+    print(" Words left to write today:".ljust(23), words_left_today, colorama.Style.RESET_ALL)
+
     print("")
     print("Deadline:".ljust(20), project['deadline'])
     print("Word count goal:".ljust(20), project['word_count_goal']) 
@@ -61,7 +79,6 @@ def reset_words_written_today():
     shared.connection.commit()
 
 
-#are these are a bit out of place in this file or am I overthinking it?
 def days_diff(text_date1, text_date2):
     date1 = text_to_date(text_date1)
     date2 = text_to_date(text_date2)
@@ -73,5 +90,15 @@ def date_to_text(dt):
 def text_to_date(text):
     return datetime.strptime(text, "%d-%m-%Y").date()
 
-#def determine_avgwords_color(so_far, from_now):
+def color_and_message(so_far, from_now):
+    if so_far - from_now < -20:
+        color = colorama.Fore.RED
+        message = "Set aside a little bit more time in your day for this project, and I'm sure you'll reach your goal!"
+    elif so_far - from_now > 20:
+        color = colorama.Fore.GREEN
+        message = "Woah! You're gonna get a speeding ticket at this rate!"
+    else:
+        color = colorama.Fore.BLUE
+        message = "You're on track!"
+    return (color, message)
 
