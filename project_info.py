@@ -92,13 +92,13 @@ def text_to_date(text):
 
 def color_and_message(so_far, from_now):
     if so_far - from_now < -20:
-        color = colorama.Fore.RED
+        color = colorama.Fore.LIGHTRED_EX
         message = "Set aside a little bit more time in your day for this project, and I'm sure you'll reach your goal!"
     elif so_far - from_now > 20:
-        color = colorama.Fore.GREEN
+        color = colorama.Fore.LIGHTGREEN_EX
         message = "Woah! You're gonna get a speeding ticket at this rate!"
     else:
-        color = colorama.Fore.BLUE
+        color = colorama.Fore.LIGHTBLUE_EX
         message = "You're on track!"
     return (color, message)
 
