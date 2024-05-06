@@ -1,6 +1,6 @@
 
 
-declare type Project = {
+export declare type WritingProject = {
     id: number,
     title: string,
     goalCount: number,
@@ -11,7 +11,7 @@ declare type Project = {
     entries?: Entry[]
 }
 
-declare type Entry = {
+export declare type Entry = {
     id: number,
     projectId: number,
     newTotal: number,
