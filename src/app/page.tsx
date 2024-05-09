@@ -1,6 +1,5 @@
-import Link from "next/link";
+import { CreationDialog } from "~/components/creationDialog";
 import { ProjectCard } from "~/components/projectCard";
-import { Card } from "~/components/ui/card";
 import { WritingProject } from "~/types";
 
 export default function HomePage() {
@@ -40,6 +39,7 @@ export default function HomePage() {
       ))}
 
       </div>
+      <CreationDialog></CreationDialog>
     </main>
   );
 }
