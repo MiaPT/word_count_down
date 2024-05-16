@@ -1,28 +1,27 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
+import * as React from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 
-import { cn } from "../lib/utils"
-import { Button } from "./ui/button"
-import { Calendar } from "./ui/calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./ui/popover"
+import { cn } from "../lib/utils";
+import { Button } from "./ui/button";
+import { Calendar } from "./ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
-
-interface DatePickerProps{
-    date: Date | undefined,
-    setDate: React.Dispatch<React.SetStateAction<Date | undefined>>,
-    disablePast?: boolean,
-    disableFuture?: boolean
+interface DatePickerProps {
+  date: Date | undefined;
+  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  disablePast?: boolean;
+  disableFuture?: boolean;
 }
 
-export function DatePicker({date, setDate, disablePast = false, disableFuture = false}: DatePickerProps) {
-
+export function DatePicker({
+  date,
+  setDate,
+  disablePast = false,
+  disableFuture = false,
+}: DatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -30,7 +29,7 @@ export function DatePicker({date, setDate, disablePast = false, disableFuture = 
           variant={"outline"}
           className={cn(
             "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !date && "text-muted-foreground",
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -43,12 +42,12 @@ export function DatePicker({date, setDate, disablePast = false, disableFuture = 
           selected={date}
           onSelect={setDate}
           initialFocus
-          disabled={(date) => 
-            disablePast && (date < new Date())
-            || disableFuture && (date > new Date())
+          disabled={(date) =>
+            (disablePast && date < new Date()) ||
+            (disableFuture && date > new Date())
           }
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }

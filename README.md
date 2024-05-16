@@ -7,17 +7,14 @@ TODO
 - [ ] button to delete projects
 - [ ] button to archive projects
 
-
 Todo after that, in no particular order for now:
+
 - [ ] page for overall statistics
-- [ ] add authentication 
+- [ ] add authentication
 - [ ] connect to db
 - [ ] save data to db for logged in users
 
 Ideas to explore
-* use google docs api to automatically fetch new word count
-* several users on one project
 
-
-
-
+- use google docs api to automatically fetch new word count
+- several users on one project
