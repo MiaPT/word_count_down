@@ -4,6 +4,7 @@ import { WritingProject } from "~/types"
 import { Button } from "./ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -36,6 +37,7 @@ export function CreationDialog() {
   }
 
 
+
   var proj: UnsavedWritingProject = {
     title : title,
     goalCount : goalCount,
@@ -61,6 +63,8 @@ export function CreationDialog() {
   }
 
   const [project, setProject] = useLocalStorage<UnsavedWritingProject | null>(newID, null)
+
+  const saveDisabled = title.length==0 || goalCount==0 || endDate==undefined || startDate==undefined || endDate < startDate
 
   return (
     <Dialog >
@@ -123,13 +127,15 @@ export function CreationDialog() {
             <DateErorrMessage/>
         </div>
         <DialogFooter>
+          <DialogClose disabled={saveDisabled}>
           <Button
-            disabled={title.length==0 || goalCount==0 || endDate==undefined || startDate==undefined || endDate < startDate} 
+            disabled={saveDisabled} 
             onClick={() => {
               setProject(proj)
               emptyForm()
             }}
           >Save</Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
