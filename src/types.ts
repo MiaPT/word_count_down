@@ -1,4 +1,5 @@
 export declare type WritingProject = {
+  id: string;
   title: string;
   goalCount: number;
   currentCount: number;

@@ -27,7 +27,7 @@ export function CreationDialog() {
   const [startCount, setStartCount] = useState(0);
   const [startDate, setStartDate] = useState<Date | undefined>(today);
   const [endDate, setEndDate] = useState<Date | undefined>();
-  const newID = nanoid(8);
+  const newID = nanoid(5);
 
   type UnsavedWritingProject = Omit<
     WritingProject,
@@ -39,6 +39,7 @@ export function CreationDialog() {
   };
 
   var proj: UnsavedWritingProject = {
+    id: newID,
     title: title,
     goalCount: goalCount,
     currentCount: startCount,
@@ -62,9 +63,9 @@ export function CreationDialog() {
     }
   }
 
-  const [project, setProject] = useLocalStorage<UnsavedWritingProject | null>(
-    newID,
-    null,
+  const [projects, saveProjects] = useLocalStorage<WritingProject[]>(
+    "projects",
+    [],
   );
 
   const saveDisabled =
@@ -136,7 +137,7 @@ export function CreationDialog() {
             <Button
               disabled={saveDisabled}
               onClick={() => {
-                setProject(proj);
+                saveProjects([...projects, proj as WritingProject]);
                 emptyForm();
               }}
             >
