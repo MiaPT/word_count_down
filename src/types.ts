@@ -10,8 +10,7 @@ export declare type WritingProject = {
 };
 
 export declare type Entry = {
-  projectId: number;
-  newTotal: number;
+  newCount: number;
   diff: number;
   date: Date;
 };

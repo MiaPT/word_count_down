@@ -3,7 +3,7 @@
 import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import { CreationDialog } from "~/components/creationDialog";
 import { ProjectCard } from "~/components/projectCard";
-import { WritingProject } from "~/types";
+import { Entry, WritingProject } from "~/types";
 
 export default function HomePage() {
   const [projects, saveProjects] = useLocalStorage<WritingProject[]>(
@@ -19,6 +19,14 @@ export default function HomePage() {
     },
   );
 
+  function addEntry(projectId: string, entry: Entry) {
+    // Maybe use deepcopy later
+    const project = projects.find((p) => p.id === projectId)!;
+    project?.entries.push(entry);
+    project.currentCount = entry.newCount;
+    saveProjects(projects);
+  }
+
   return (
     <main className="flex flex-col items-center">
       <div
@@ -26,7 +34,11 @@ export default function HomePage() {
         suppressHydrationWarning={true}
       >
         {projects.map((p) => (
-          <ProjectCard key={p.id} project={p} />
+          <ProjectCard
+            key={p.id}
+            project={p}
+            addEntry={(entry) => addEntry(p.id, entry)}
+          />
         ))}
       </div>
       <CreationDialog />
