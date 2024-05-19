@@ -5,6 +5,7 @@ export declare type WritingProject = {
   currentCount: number;
   startDate: Date;
   endDate: Date;
+  edited: Date;
   url?: string;
   entries: Entry[];
 };

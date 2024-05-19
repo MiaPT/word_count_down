@@ -13,6 +13,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Entry, WritingProject } from "~/types";
 import Link from "next/link";
+import { wordsRemainingToday } from "~/lib/calculations";
 
 export interface ProjectCardProps {
   project: WritingProject;
@@ -59,7 +60,7 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div>Words remaining today: {wordsToday}</div>
+        <div>Words remaining today: {wordsRemainingToday(project)}</div>
       </CardContent>
       <CardFooter>
         <form

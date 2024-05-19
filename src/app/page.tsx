@@ -15,15 +15,23 @@ export default function HomePage() {
           ...wp,
           endDate: new Date(wp.endDate),
           startDate: new Date(wp.startDate),
+          edited: new Date(wp.edited),
+          entries: wp.entries.map(e => ({
+            ...e,
+            date: new Date(e.date)
+          }))
         })),
     },
   );
+
+
 
   function addEntry(projectId: string, entry: Entry) {
     // Maybe use deepcopy later
     const project = projects.find((p) => p.id === projectId)!;
     project?.entries.push(entry);
     project.currentCount = entry.newCount;
+    project.edited = new Date();
     saveProjects(projects);
   }
 

@@ -44,6 +44,7 @@ export function CreationDialog() {
     goalCount: goalCount,
     currentCount: startCount,
     startDate: startDate,
+    edited: new Date(),
     endDate: endDate,
     entries: [],
   };
