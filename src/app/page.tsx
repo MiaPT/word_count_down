@@ -38,7 +38,7 @@ export default function HomePage() {
   return (
     <main className="flex flex-col items-center">
       <div
-        className="justify-left flex w-4/5 flex-wrap"
+        className="grid md:grid-cols-1 xl:grid-cols-2"
         suppressHydrationWarning={true}
       >
         {projects.map((p) => (

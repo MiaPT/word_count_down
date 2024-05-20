@@ -79,7 +79,7 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
             <Label htmlFor="newWordCount" className="mr-5">
               Enter new word count:
             </Label>
-            <Input name="newWordCount" type="number" className="mr-1 w-1/5" />
+            <Input required name="newWordCount" type="number" className="mr-1 w-1/5" />
             <Button>Update</Button>
           </div>
         </form>

@@ -70,10 +70,11 @@ export function CreationDialog() {
   );
 
   const saveDisabled =
-    title.length == 0 ||
-    goalCount == 0 ||
-    endDate == undefined ||
-    startDate == undefined ||
+    title.length === 0 ||
+    goalCount === 0 ||
+    goalCount === undefined ||
+    endDate === undefined ||
+    startDate === undefined ||
     endDate < startDate;
 
   return (
