@@ -15,7 +15,6 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { nanoid } from "nanoid";
 import { useLocalStorage } from "usehooks-ts";
 import { useState } from "react";
 import { DatePicker } from "./datePicker";
@@ -36,14 +35,20 @@ export function EditDialog({ project }: EditDialogProps) {
   );
   const [endDate, setEndDate] = useState<Date | undefined>(project.endDate);
 
-  type UnsavedWritingProject = Omit<
-    WritingProject,
-    "startDate" | "endDate" | "goalCount"
-  > & {
-    startDate?: Date;
-    endDate?: Date;
-    goalCount?: number;
-  };
+  function SaveChanges(archive = false) {
+    const updatedProject = projects.find((p) => p.id === project.id)!;
+    (updatedProject.endDate = endDate!),
+      (updatedProject.goalCount = goalCount!),
+      (updatedProject.title = title),
+      (updatedProject.archived = archive),
+      (updatedProject.startDate = startDate!);
+    saveProjects(projects);
+  }
+
+  function DeleteProject() {
+    const p = projects.filter((p) => p.id !== project.id);
+    saveProjects(p);
+  }
 
   function DateErorrMessage() {
     if (startDate && endDate) {
@@ -68,24 +73,29 @@ export function EditDialog({ project }: EditDialogProps) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <button>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            className="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-            />
-          </svg>
-        </button>
-      </DialogTrigger>
+      <Tooltip>
+        <TooltipTrigger>
+          <DialogTrigger asChild>
+            <button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                />
+              </svg>
+            </button>
+          </DialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Edit project</TooltipContent>
+      </Tooltip>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit project</DialogTitle>
@@ -134,8 +144,7 @@ export function EditDialog({ project }: EditDialogProps) {
                   <Button
                     disabled={saveDisabled}
                     onClick={() => {
-                      //saveProjects([...projects, proj as WritingProject]);
-                      //emptyForm();
+                      DeleteProject();
                     }}
                   >
                     <svg
@@ -166,6 +175,7 @@ export function EditDialog({ project }: EditDialogProps) {
                   <Button
                     disabled={saveDisabled}
                     onClick={() => {
+                      SaveChanges(true);
                       //saveProjects([...projects, proj as WritingProject]);
                       //emptyForm();
                     }}
@@ -197,8 +207,7 @@ export function EditDialog({ project }: EditDialogProps) {
                   <Button
                     disabled={saveDisabled}
                     onClick={() => {
-                      //saveProjects([...projects, proj as WritingProject]);
-                      //emptyForm();
+                      SaveChanges();
                     }}
                   >
                     <svg

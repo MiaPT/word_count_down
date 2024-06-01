@@ -47,6 +47,7 @@ export function CreationDialog() {
     edited: new Date(),
     endDate: endDate,
     entries: [],
+    archived: false,
   };
 
   function emptyForm() {

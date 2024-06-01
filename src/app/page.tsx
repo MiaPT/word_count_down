@@ -16,15 +16,13 @@ export default function HomePage() {
           endDate: new Date(wp.endDate),
           startDate: new Date(wp.startDate),
           edited: new Date(wp.edited),
-          entries: wp.entries.map(e => ({
+          entries: wp.entries.map((e) => ({
             ...e,
-            date: new Date(e.date)
-          }))
+            date: new Date(e.date),
+          })),
         })),
     },
   );
-
-
 
   function addEntry(projectId: string, entry: Entry) {
     // Maybe use deepcopy later
@@ -41,13 +39,15 @@ export default function HomePage() {
         className="grid md:grid-cols-1 xl:grid-cols-2"
         suppressHydrationWarning={true}
       >
-        {projects.map((p) => (
-          <ProjectCard
-            key={p.id}
-            project={p}
-            addEntry={(entry) => addEntry(p.id, entry)}
-          />
-        ))}
+        {projects
+          .filter((p) => p.archived === false)
+          .map((p) => (
+            <ProjectCard
+              key={p.id}
+              project={p}
+              addEntry={(entry) => addEntry(p.id, entry)}
+            />
+          ))}
       </div>
       <CreationDialog />
     </main>

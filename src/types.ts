@@ -7,6 +7,7 @@ export declare type WritingProject = {
   endDate: Date;
   edited: Date;
   url?: string;
+  archived: boolean;
   entries: Entry[];
 };
 
