@@ -1,5 +1,5 @@
 import "~/styles/globals.css";
-
+import { TooltipProvider } from "../components/ui/tooltip";
 import { Inter } from "next/font/google";
 import { TopNav } from "~/components/topnav";
 import React from "react";
@@ -23,8 +23,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable} dark`}>
-        <TopNav />
-        {children}
+        <TooltipProvider delayDuration={100}>
+          <TopNav />
+          {children}
+        </TooltipProvider>
       </body>
     </html>
   );
