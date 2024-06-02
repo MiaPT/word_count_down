@@ -3,8 +3,10 @@ TODO
 - [x] basic scaffolding with dummy data on front page
 - [x] project creation dialog
 - [x] save data to local storage
-- [ ] button to delete projects
-- [ ] button to archive projects
+- [x] button to delete projects
+- [ ] confirmation window to delete
+- [x] button to archive projects
+- [ ] archive page
 - [ ] detail page for each project, with statistics
 - [ ] connect to db
 

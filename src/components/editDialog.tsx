@@ -37,11 +37,17 @@ export function EditDialog({ project }: EditDialogProps) {
 
   function SaveChanges(archive = false) {
     const updatedProject = projects.find((p) => p.id === project.id)!;
-    (updatedProject.endDate = endDate!),
-      (updatedProject.goalCount = goalCount!),
-      (updatedProject.title = title),
-      (updatedProject.archived = archive),
-      (updatedProject.startDate = startDate!);
+    updatedProject.endDate = endDate!;
+    updatedProject.goalCount = goalCount!;
+    updatedProject.title = title;
+    updatedProject.archived = archive;
+    updatedProject.startDate = startDate!;
+    saveProjects(projects);
+  }
+
+  function ArchiveProject() {
+    const updatedProject = projects.find((p) => p.id === project.id)!;
+    updatedProject.archived = true;
     saveProjects(projects);
   }
 
@@ -175,9 +181,7 @@ export function EditDialog({ project }: EditDialogProps) {
                   <Button
                     disabled={saveDisabled}
                     onClick={() => {
-                      SaveChanges(true);
-                      //saveProjects([...projects, proj as WritingProject]);
-                      //emptyForm();
+                      ArchiveProject();
                     }}
                   >
                     <svg
