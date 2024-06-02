@@ -19,6 +19,11 @@ import { Label } from "./ui/label";
 import { useLocalStorage } from "usehooks-ts";
 import { useState } from "react";
 import { DatePicker } from "./datePicker";
+import {
+  DeleteProject,
+  SaveChanges,
+  SetIsArchived,
+} from "~/lib/manageProjectFunctions";
 
 interface EditDialogProps {
   project: WritingProject;
@@ -35,28 +40,6 @@ export function EditDialog({ project }: EditDialogProps) {
     project.startDate,
   );
   const [endDate, setEndDate] = useState<Date | undefined>(project.endDate);
-
-  function SaveChanges(archive = false) {
-    const updatedProject = projects.find((p) => p.id === project.id)!;
-    updatedProject.endDate = endDate!;
-    updatedProject.goalCount = goalCount!;
-    updatedProject.title = title;
-    updatedProject.archived = archive;
-    updatedProject.startDate = startDate!;
-    saveProjects(projects);
-  }
-
-  function SetIsArchived(archived: boolean) {
-    console.log(project.id);
-    const updatedProject = projects.find((p) => p.id === project.id)!;
-    updatedProject.archived = archived;
-    saveProjects(projects);
-  }
-
-  function DeleteProject() {
-    const p = projects.filter((p) => p.id !== project.id);
-    saveProjects(p);
-  }
 
   function DateErorrMessage() {
     if (startDate && endDate) {
@@ -154,7 +137,7 @@ export function EditDialog({ project }: EditDialogProps) {
                       if (
                         confirm("Do you really want to delete this project?")
                       ) {
-                        DeleteProject();
+                        DeleteProject(project.id, projects, saveProjects);
                         toast("Project deleted");
                       }
                     }}
@@ -185,11 +168,17 @@ export function EditDialog({ project }: EditDialogProps) {
                 <TooltipTrigger>
                   <Button
                     onClick={() => {
-                      SetIsArchived(true);
+                      SetIsArchived(true, project.id, projects, saveProjects);
                       toast("Project archived", {
                         action: {
                           label: "Undo",
-                          onClick: () => SetIsArchived(false),
+                          onClick: () =>
+                            SetIsArchived(
+                              false,
+                              project.id,
+                              projects,
+                              saveProjects,
+                            ),
                         },
                       });
                     }}
@@ -221,7 +210,15 @@ export function EditDialog({ project }: EditDialogProps) {
                   <Button
                     disabled={saveDisabled}
                     onClick={() => {
-                      SaveChanges();
+                      SaveChanges(
+                        project.id,
+                        endDate!,
+                        goalCount!,
+                        title,
+                        startDate!,
+                        projects,
+                        saveProjects,
+                      );
                       toast("Changes saved!");
                     }}
                   >

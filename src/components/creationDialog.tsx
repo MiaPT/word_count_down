@@ -81,7 +81,12 @@ export function CreationDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">New project</Button>
+        <Button
+          variant="outline"
+          className="bg-gradient-to-tl from-[#70b5ff] via-[#d74e83] to-[#e77951]"
+        >
+          New project
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
