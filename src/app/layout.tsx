@@ -2,6 +2,7 @@ import "~/styles/globals.css";
 import { TooltipProvider } from "../components/ui/tooltip";
 import { Inter } from "next/font/google";
 import { TopNav } from "~/components/topnav";
+import { Toaster } from "../components/ui/sonner"
 import React from "react";
 
 const inter = Inter({
@@ -27,6 +28,7 @@ export default function RootLayout({
           <TopNav />
           {children}
         </TooltipProvider>
+        <Toaster/>
       </body>
     </html>
   );

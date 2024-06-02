@@ -2,6 +2,7 @@
 
 import { WritingProject } from "~/types";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogClose,
@@ -45,9 +46,10 @@ export function EditDialog({ project }: EditDialogProps) {
     saveProjects(projects);
   }
 
-  function ArchiveProject() {
+  function SetIsArchived(archived: boolean) {
+    console.log(project.id)
     const updatedProject = projects.find((p) => p.id === project.id)!;
-    updatedProject.archived = true;
+    updatedProject.archived = archived;
     saveProjects(projects);
   }
 
@@ -144,13 +146,15 @@ export function EditDialog({ project }: EditDialogProps) {
         </div>
         <DialogFooter>
           <div className="flox-col flex w-full justify-around">
-            <DialogClose disabled={saveDisabled}>
+            <DialogClose >
               <Tooltip>
                 <TooltipTrigger>
                   <Button
-                    disabled={saveDisabled}
                     onClick={() => {
-                      DeleteProject();
+                      if (confirm("Do you really want to delete this project?")){
+                        DeleteProject()
+                        toast("Project deleted")
+                      }
                     }}
                   >
                     <svg
@@ -174,14 +178,18 @@ export function EditDialog({ project }: EditDialogProps) {
                 </TooltipContent>
               </Tooltip>
             </DialogClose>
-
-            <DialogClose disabled={saveDisabled}>
+            <DialogClose>
               <Tooltip>
                 <TooltipTrigger>
                   <Button
-                    disabled={saveDisabled}
                     onClick={() => {
-                      ArchiveProject();
+                      SetIsArchived(true);
+                      toast("Project archived", {
+                        action: {
+                          label: "Undo",
+                          onClick: () =>  SetIsArchived(false)
+                        }
+                      })
                     }}
                   >
                     <svg
@@ -212,6 +220,7 @@ export function EditDialog({ project }: EditDialogProps) {
                     disabled={saveDisabled}
                     onClick={() => {
                       SaveChanges();
+                      toast("Changes saved!")
                     }}
                   >
                     <svg

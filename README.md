@@ -16,6 +16,8 @@ Todo after that, in no particular order for now:
 - [ ] page for overall statistics 
 - [ ] add authentication
 - [ ] move locally stored data to db for logged in users
+- [ ] small confetti animation when user finishes today's work
+- [ ] big confetti animation when the user finishes a project
 
 Ideas to explore
 
