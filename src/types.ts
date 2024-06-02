@@ -3,6 +3,7 @@ export declare type WritingProject = {
   title: string;
   goalCount: number;
   currentCount: number;
+  createdOn?: Date; //TODO: make this mandatory
   startDate: Date;
   endDate: Date;
   edited: Date;

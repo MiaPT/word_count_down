@@ -8,6 +8,11 @@ export function TopNav() {
           Home
         </span>
       </Link>
+      <Link href={"/archive"} className="mr-5">
+        <span className="bg-gradient-to-r from-[#ff9770] via-[#ff70a6] to-[#70d6ff] bg-clip-text text-2xl text-transparent">
+          Archive
+        </span>
+      </Link>
     </nav>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
+import { useLocalStorage } from "usehooks-ts";
 import { CreationDialog } from "~/components/creationDialog";
 import { ProjectCard } from "~/components/projectCard";
+import { projectDeserializer } from "~/lib/manageProjectFunctions";
 import { Entry, WritingProject } from "~/types";
 
 export default function HomePage() {
@@ -10,17 +11,7 @@ export default function HomePage() {
     "projects",
     [],
     {
-      deserializer: (v) =>
-        (JSON.parse(v) as WritingProject[]).map((wp) => ({
-          ...wp,
-          endDate: new Date(wp.endDate),
-          startDate: new Date(wp.startDate),
-          edited: new Date(wp.edited),
-          entries: wp.entries.map((e) => ({
-            ...e,
-            date: new Date(e.date),
-          })),
-        })),
+      deserializer: projectDeserializer,
     },
   );
 
@@ -53,33 +44,3 @@ export default function HomePage() {
     </main>
   );
 }
-
-// const dummyProjects: WritingProject[] = [
-//   {
-//     id: "1",
-//     title: "The Next American Novel",
-//     currentCount: 12000,
-//     goalCount: 60000,
-//     endDate: new Date("04 Dec 2024"),
-//     startDate: new Date("04 Jan 2024"),
-//     entries: [],
-//   },
-//   {
-//     id: "2",
-//     title: "Essay on beekeeping",
-//     currentCount: 300,
-//     goalCount: 2500,
-//     endDate: new Date("07 May 2024"),
-//     startDate: new Date("15 Apr 2024"),
-//     entries: [],
-//   },
-//   {
-//     id: "3",
-//     title: "Analysis of Cats the Musical",
-//     currentCount: 50,
-//     goalCount: 4000,
-//     endDate: new Date("10 Aug 2024"),
-//     startDate: new Date("16 Feb 2024"),
-//     entries: [],
-//   },
-// ];
