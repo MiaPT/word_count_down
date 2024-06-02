@@ -13,7 +13,7 @@ TODO
 Todo after that, in no particular order for now:
 
 - [ ] deploy to vercel
-- [ ] page for overall statistics 
+- [ ] page for overall statistics
 - [ ] add authentication
 - [ ] move locally stored data to db for logged in users
 - [ ] small confetti animation when user finishes today's work

@@ -47,7 +47,7 @@ export function EditDialog({ project }: EditDialogProps) {
   }
 
   function SetIsArchived(archived: boolean) {
-    console.log(project.id)
+    console.log(project.id);
     const updatedProject = projects.find((p) => p.id === project.id)!;
     updatedProject.archived = archived;
     saveProjects(projects);
@@ -146,14 +146,16 @@ export function EditDialog({ project }: EditDialogProps) {
         </div>
         <DialogFooter>
           <div className="flox-col flex w-full justify-around">
-            <DialogClose >
+            <DialogClose>
               <Tooltip>
                 <TooltipTrigger>
                   <Button
                     onClick={() => {
-                      if (confirm("Do you really want to delete this project?")){
-                        DeleteProject()
-                        toast("Project deleted")
+                      if (
+                        confirm("Do you really want to delete this project?")
+                      ) {
+                        DeleteProject();
+                        toast("Project deleted");
                       }
                     }}
                   >
@@ -187,9 +189,9 @@ export function EditDialog({ project }: EditDialogProps) {
                       toast("Project archived", {
                         action: {
                           label: "Undo",
-                          onClick: () =>  SetIsArchived(false)
-                        }
-                      })
+                          onClick: () => SetIsArchived(false),
+                        },
+                      });
                     }}
                   >
                     <svg
@@ -220,7 +222,7 @@ export function EditDialog({ project }: EditDialogProps) {
                     disabled={saveDisabled}
                     onClick={() => {
                       SaveChanges();
-                      toast("Changes saved!")
+                      toast("Changes saved!");
                     }}
                   >
                     <svg
