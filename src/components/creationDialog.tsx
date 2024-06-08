@@ -38,7 +38,7 @@ export function CreationDialog() {
     goalCount?: number;
   };
 
-  var proj: UnsavedWritingProject = {
+  const proj: UnsavedWritingProject = {
     id: newID,
     title: title,
     goalCount: goalCount,
