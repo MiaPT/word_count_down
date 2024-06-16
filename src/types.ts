@@ -24,5 +24,5 @@ export declare type GraphDataEntry = {
   data: {
     x: string | Date;
     y: number;
-  }[]
-}
+  }[];
+};
