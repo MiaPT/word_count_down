@@ -1,8 +1,6 @@
-import { WritingProject } from "~/types";
+import { Entry, GraphDataEntry, WritingProject } from "~/types";
 
 function areDatesEqual(d1: Date, d2: Date) {
-  console.trace();
-  console.log({ d1, d2 });
   const date1 = new Date(d1.getDate(), d1.getMonth(), d1.getFullYear());
   const date2 = new Date(d2.getDate(), d2.getMonth(), d2.getFullYear());
 
@@ -38,4 +36,24 @@ export function wordsRemainingToday(project: WritingProject) {
       writtenToday,
     0,
   );
+}
+
+function concatenateEntries(entries: Entry[]) {
+  const totalDiff = entries.map(e => e.diff).reduce((a,b) => a+b, 0)
+  return {x: entries[0]!.date.toLocaleDateString(), y: totalDiff}
+}
+
+function entriesToGraphPoints(entries: Entry[]){
+  const uniqueDates = Array.from(new Set(entries.map(e => e.date.toLocaleDateString())))
+  let datalist: {x: string, y: number}[] = []
+  uniqueDates.forEach(d => datalist.push(concatenateEntries((entries.filter(e => (e.date.toLocaleDateString() === d))))))
+  return datalist
+}
+
+
+export function projectsToGraphData(projects: WritingProject[]): GraphDataEntry[]{
+  return projects.map(p => ( {id: p!.title,
+    color: `hsl(${Math.floor(Math.random() * 359)}, 70%, 50%)`,
+    data: entriesToGraphPoints(p.entries)
+  }))
 }
