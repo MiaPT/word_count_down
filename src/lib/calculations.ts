@@ -13,6 +13,22 @@ export function daysLeft(project: WritingProject) {
   );
 }
 
+//TODO: finish this maybe
+
+// export function generateEntries(startCount: number, startDate: Date): Entry[]{
+//   //if startdate is before today and startcount is more than 0
+//   //create an entry for each day from startdate until today
+//   //ensure that the daily entries are whole numbers, but also that it sums perfectly to the startcount
+//   //maybe use modulo for this, with the last date getting the rest
+//   //figure out if this should only happen with word counts over a certain number 
+//   //seems unnecessary if the word count is like 50
+//   if (!areDatesEqual(startDate, new Date()) && startCount > 0){
+    
+//   }
+
+//   return [{newCount: startCount, date: startDate, diff: startCount}]
+// }
+
 export function wordsRemainingToday(project: WritingProject) {
   const today = new Date();
   const remainingTotal = Math.max(project.goalCount - project.currentCount, 0);

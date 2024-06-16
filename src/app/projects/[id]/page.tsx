@@ -18,8 +18,19 @@ export default function ProjectPage() {
     },
   );
 
+  
   const project = projects.filter((p) => p.id === params.id)[0];
-
+  
+  const uniqueDates = Array.from(
+    new Set(project!.entries.map((e) => e.date.toLocaleDateString())),
+    );
+    
+    if (uniqueDates.length < 2){
+      return(
+        <p>Statistics for {project?.title} will appear here once there is more data to show:)</p>
+      )
+    }
+    
   const data = projectsToGraphData([project!]);
 
   const theme = {
@@ -46,8 +57,10 @@ export default function ProjectPage() {
   };
 
   return (
+
+
     <div className="w-100 h-96 text-black">
-      <p>hellooo</p>
+      <p className="text-white">Words written per day on {project?.title}</p>
       <ResponsiveLine
         data={data}
         theme={theme}

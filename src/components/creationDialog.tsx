@@ -1,6 +1,6 @@
 "use client";
 
-import { WritingProject } from "~/types";
+import { Entry, WritingProject } from "~/types";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -18,6 +18,16 @@ import { nanoid } from "nanoid";
 import { useLocalStorage } from "usehooks-ts";
 import { useState } from "react";
 import { DatePicker } from "./datePicker";
+
+
+function generateEntries(startCount: number, startDate: Date): Entry[]{
+  
+  if (startCount === 0 || startDate === new Date()){
+    return [{newCount: startCount, date: new Date(), diff: startCount}]
+  }
+
+  return [{newCount: startCount, date: new Date(), diff: startCount}]
+}
 
 export function CreationDialog() {
   const today = new Date();
@@ -38,6 +48,7 @@ export function CreationDialog() {
     goalCount?: number;
   };
 
+
   const proj: UnsavedWritingProject = {
     id: newID,
     title: title,
@@ -47,7 +58,7 @@ export function CreationDialog() {
     createdOn: new Date(),
     edited: new Date(),
     endDate: endDate,
-    entries: [],
+    entries: [{newCount: startCount, date: startDate!, diff: startCount}],
     archived: false,
   };
 
