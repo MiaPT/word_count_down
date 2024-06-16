@@ -47,7 +47,7 @@ function entriesToGraphPoints(entries: Entry[]) {
   const uniqueDates = Array.from(
     new Set(entries.map((e) => e.date.toLocaleDateString())),
   );
-  let datalist: { x: string; y: number }[] = [];
+  const datalist: { x: string; y: number }[] = [];
   uniqueDates.forEach((d) =>
     datalist.push(
       concatenateEntries(
@@ -62,7 +62,7 @@ export function projectsToGraphData(
   projects: WritingProject[],
 ): GraphDataEntry[] {
   return projects.map((p) => ({
-    id: p!.title,
+    id: p.title,
     color: `hsl(${Math.floor(Math.random() * 359)}, 70%, 50%)`,
     data: entriesToGraphPoints(p.entries),
   }));
