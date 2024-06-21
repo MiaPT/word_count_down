@@ -41,7 +41,6 @@ export function DatePicker({
           mode="single"
           selected={date}
           onSelect={setDate}
-          initialFocus
           disabled={(date) =>
             (disablePast && date < new Date()) ||
             (disableFuture && date > new Date())

@@ -152,8 +152,8 @@ export function CreationDialog() {
           </div>
           <DateErorrMessage />
         </div>
-        <DialogFooter>
-          <DialogClose disabled={saveDisabled}>
+        <DialogFooter className="flex">
+          <DialogClose className="mx-auto" disabled={saveDisabled}>
             <Button
               disabled={saveDisabled}
               onClick={() => {

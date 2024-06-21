@@ -36,7 +36,7 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
     daysLeft > 0 ? Math.round(wordsLeftTotal / daysLeft) : wordsLeftTotal;
 
   return (
-    <Card className="group m-5 w-[500px]">
+    <Card className="group m-5 w-[350px] sm:w-[500px]">
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>{project.title}</CardTitle>
