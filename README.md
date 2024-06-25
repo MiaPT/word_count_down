@@ -4,20 +4,21 @@ TODO
 - [x] project creation dialog
 - [x] save data to local storage
 - [x] button to delete projects
-- [ ] confirmation window to delete
+- [x] confirmation window to delete
 - [x] button to archive projects
-- [ ] archive page
+- [x] archive page
 - [ ] detail page for each project, with statistics
 - [ ] connect to db
+- [ ] make confetti fancier??
 
 Todo after that, in no particular order for now:
 
-- [ ] deploy to vercel
+- [x] deploy to vercel
 - [ ] page for overall statistics
 - [ ] add authentication
 - [ ] move locally stored data to db for logged in users
-- [ ] small confetti animation when user finishes today's work
-- [ ] big confetti animation when the user finishes a project
+- [x] small confetti animation when user finishes today's work
+- [x] big confetti animation when the user finishes a project
 
 Ideas to explore
 

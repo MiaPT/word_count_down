@@ -17,6 +17,7 @@ import { wordsRemainingToday } from "~/lib/calculations";
 import { EditDialog } from "./editDialog";
 import { useState } from "react";
 import { ArrowRightIcon } from "./ui/SVGIcons";
+import Confetti from "react-confetti";
 
 export interface ProjectCardProps {
   project: WritingProject;
@@ -28,6 +29,9 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
     (project.endDate.getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000),
   );
 
+  const [runSmallConfetti, setRunSmallConfetti] = useState(false);
+  const [runBigConfetti, setRunBigConfetti] = useState(false);
+
   const [newWordCount, setNewWordCount] = useState(project.currentCount);
 
   const wordsLeftTotal = project.goalCount - project.currentCount;
@@ -37,6 +41,18 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
 
   return (
     <Card className="group m-5 w-[350px] sm:w-[500px]">
+      <Confetti
+        tweenDuration={1500}
+        numberOfPieces={300}
+        recycle={false}
+        run={runSmallConfetti}
+      />
+      <Confetti
+        tweenDuration={5000}
+        numberOfPieces={10000}
+        recycle={false}
+        run={runBigConfetti}
+      />
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>{project.title}</CardTitle>
@@ -69,6 +85,11 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
               date: new Date(),
             };
             addEntry(entry);
+            if (entry.newCount >= project.goalCount) {
+              setRunBigConfetti(true);
+            } else if (entry.diff > wordsToday) {
+              setRunSmallConfetti(true);
+            }
           }}
         >
           <div className="flex">

@@ -37,7 +37,7 @@ export function ArchivedCard({
   const wordsLeftTotal = project.goalCount - project.currentCount;
 
   return (
-    <Card className="group m-5 w-[500px]">
+    <Card className="group m-5 w-[350px] sm:w-[500px]">
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>{project.title}</CardTitle>

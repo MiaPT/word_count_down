@@ -19,14 +19,12 @@ import { useLocalStorage } from "usehooks-ts";
 import { useState } from "react";
 import { DatePicker } from "./datePicker";
 
-
-function generateEntries(startCount: number, startDate: Date): Entry[]{
-  
-  if (startCount === 0 || startDate === new Date()){
-    return [{newCount: startCount, date: new Date(), diff: startCount}]
+function generateEntries(startCount: number, startDate: Date): Entry[] {
+  if (startCount === 0 || startDate === new Date()) {
+    return [{ newCount: startCount, date: new Date(), diff: startCount }];
   }
 
-  return [{newCount: startCount, date: new Date(), diff: startCount}]
+  return [{ newCount: startCount, date: new Date(), diff: startCount }];
 }
 
 export function CreationDialog() {
@@ -48,7 +46,6 @@ export function CreationDialog() {
     goalCount?: number;
   };
 
-
   const proj: UnsavedWritingProject = {
     id: newID,
     title: title,
@@ -58,7 +55,7 @@ export function CreationDialog() {
     createdOn: new Date(),
     edited: new Date(),
     endDate: endDate,
-    entries: [{newCount: startCount, date: startDate!, diff: startCount}],
+    entries: [{ newCount: startCount, date: startDate!, diff: startCount }],
     archived: false,
   };
 
