@@ -36,7 +36,7 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
 
   const wordsLeftTotal = project.goalCount - project.currentCount;
 
-  const wordsToday =
+  const wordsLeftToday =
     daysLeft > 0 ? Math.round(wordsLeftTotal / daysLeft) : wordsLeftTotal;
 
   return (
@@ -85,9 +85,10 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
               date: new Date(),
             };
             addEntry(entry);
+            console.log("Words left today: ", wordsLeftToday, "\n diff:", entry.diff)
             if (entry.newCount >= project.goalCount) {
               setRunBigConfetti(true);
-            } else if (entry.diff > wordsToday) {
+            } else if (entry.diff >= wordsLeftToday) {
               setRunSmallConfetti(true);
             }
           }}
