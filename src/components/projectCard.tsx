@@ -34,10 +34,7 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
 
   const [newWordCount, setNewWordCount] = useState(project.currentCount);
 
-  const wordsLeftTotal = project.goalCount - project.currentCount;
-
-  const wordsLeftToday =
-    daysLeft > 0 ? Math.round(wordsLeftTotal / daysLeft) : wordsLeftTotal;
+  const wordsLeftToday = wordsRemainingToday(project)
 
   return (
     <Card className="group m-5 w-[350px] sm:w-[500px]">
@@ -73,7 +70,7 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div>Words remaining today: {wordsRemainingToday(project)}</div>
+        <div>Words remaining today: {wordsLeftToday}</div>
       </CardContent>
       <CardFooter>
         <form
