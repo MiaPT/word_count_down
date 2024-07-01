@@ -189,7 +189,7 @@ export function EditDialog({ project }: EditDialogProps) {
                       toast("Changes saved!");
                     }}
                   >
-                    <CheckmarkIcon />
+                    <CheckmarkIcon className="stroke-2 size-6"/>
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>

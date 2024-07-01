@@ -16,7 +16,7 @@ import Link from "next/link";
 import { wordsRemainingToday } from "~/lib/calculations";
 import { EditDialog } from "./editDialog";
 import { useState } from "react";
-import { ArrowRightIcon } from "./ui/SVGIcons";
+import { ArrowRightIcon, CheckmarkIcon } from "./ui/SVGIcons";
 import Confetti from "react-confetti";
 
 export interface ProjectCardProps {
@@ -103,6 +103,7 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
               className="mr-1 w-1/5"
             />
             <Button>Update</Button>
+            <CheckmarkIcon className={"stroke-green-700 ml-5 stroke-[4] size-10 " +  (wordsLeftToday > 0 ? "invisible" : "visible")} />
           </div>
         </form>
       </CardFooter>

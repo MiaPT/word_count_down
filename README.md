@@ -7,7 +7,7 @@ TODO
 - [x] confirmation window to delete
 - [x] button to archive projects
 - [x] archive page
-- [ ] detail page for each project, with statistics
+- [ ] detail page for each project, with statistics (there is a graph now but the whole thing needs more work)
 - [ ] connect to db
 - [ ] make confetti fancier??
 

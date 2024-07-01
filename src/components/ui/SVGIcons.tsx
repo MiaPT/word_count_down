@@ -1,5 +1,7 @@
 // from heroicons.com <3
 
+import { cn } from "~/lib/utils";
+
 export function ArchiveIcon() {
   return (
     <svg
@@ -57,15 +59,15 @@ export function TrashIcon() {
   );
 }
 
-export function CheckmarkIcon() {
+export function CheckmarkIcon({className}: {className: string}, visibility: string) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      strokeWidth="1.5"
       stroke="currentColor"
-      className="size-6"
+      visibility={visibility}
+      className={cn(className)}
     >
       <path
         strokeLinecap="round"
