@@ -15,13 +15,16 @@ import { Entry, WritingProject } from "~/types";
 import Link from "next/link";
 import { wordsRemainingToday } from "~/lib/calculations";
 import { EditDialog } from "./editDialog";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowRightIcon, CheckmarkIcon } from "./ui/SVGIcons";
-import Confetti from "react-confetti";
+import Realistic from "react-canvas-confetti/dist/presets/realistic";
+import Fireworks from "react-canvas-confetti/dist/presets/fireworks";
+import { TConductorInstance } from "react-canvas-confetti/dist/types";
 
 export interface ProjectCardProps {
   project: WritingProject;
   addEntry: (e: Entry) => void;
+  shootConfetti: () => void
 }
 
 export function ProjectCard({ project, addEntry }: ProjectCardProps) {
@@ -29,27 +32,37 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
     (project.endDate.getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000),
   );
 
-  const [runSmallConfetti, setRunSmallConfetti] = useState(false);
-  const [runBigConfetti, setRunBigConfetti] = useState(false);
-
   const [newWordCount, setNewWordCount] = useState(project.currentCount);
 
   const wordsLeftToday = wordsRemainingToday(project)
 
+  const [confettiConductor, setConfettiConductor] = useState<null | TConductorInstance>(null)
+  const [fireworksConductor, setFireworksConductor] = useState<null | TConductorInstance>(null)
+
+  const checkmarkContainerRef = useRef<HTMLSpanElement | null>(null)
+
+  const [SmallConfettiShot, setSmallConfettiShot] = useState(wordsLeftToday === 0)
+  const [fireworksShot, setFireworksShot] = useState(project.currentCount >= project.goalCount)
+
+  const computeConfettiPosition = () => {
+    let checkmarkPosition = checkmarkContainerRef.current?.getBoundingClientRect()
+    let confettiPosition = {
+      x: checkmarkPosition ? (checkmarkPosition.x + checkmarkPosition.width/2) / window.innerWidth : 0.5,
+      y: checkmarkPosition ? (checkmarkPosition.y + checkmarkPosition.height/2) / window.innerHeight : 0.5
+    }
+    return confettiPosition
+  }
+
+  function shootFireworks(i: number) {
+    if (i > 0) {
+      fireworksConductor?.shoot()
+      fireworksConductor?.shoot()
+      setTimeout(() => shootFireworks(i-1), 600);
+    }
+  }
+
   return (
     <Card className="group m-5 w-[350px] sm:w-[500px]">
-      <Confetti
-        tweenDuration={1500}
-        numberOfPieces={300}
-        recycle={false}
-        run={runSmallConfetti}
-      />
-      <Confetti
-        tweenDuration={5000}
-        numberOfPieces={10000}
-        recycle={false}
-        run={runBigConfetti}
-      />
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>{project.title}</CardTitle>
@@ -82,11 +95,12 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
               date: new Date(),
             };
             addEntry(entry);
-            console.log("Words left today: ", wordsLeftToday, "\n diff:", entry.diff)
-            if (entry.newCount >= project.goalCount) {
-              setRunBigConfetti(true);
-            } else if (entry.diff >= wordsLeftToday) {
-              setRunSmallConfetti(true);
+            if (!fireworksShot && entry.newCount >= project.goalCount) {
+              shootFireworks(3)
+              setFireworksShot(true)
+            } else if (!SmallConfettiShot && entry.diff >= wordsLeftToday) {
+              confettiConductor?.shoot();
+              setSmallConfettiShot(true)
             }
           }}
         >
@@ -100,10 +114,14 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
               type="number"
               value={newWordCount}
               onChange={(e) => setNewWordCount(e.target.valueAsNumber)}
-              className="mr-1 w-1/5"
+              className="mr-1 w-2/5 sm:w-1/5"
             />
             <Button>Update</Button>
-            <CheckmarkIcon className={"stroke-green-700 ml-5 stroke-[4] size-10 " +  (wordsLeftToday > 0 ? "invisible" : "visible")} />
+            <Fireworks onInit={({conductor}) =>setFireworksConductor(conductor)}/>
+            <Realistic onInit={({conductor}) =>setConfettiConductor(conductor)} decorateOptions={(options) => ({...options, origin: computeConfettiPosition() })}/>
+            <span ref={checkmarkContainerRef} className="ml-5">
+              <CheckmarkIcon className={"stroke-green-700 stroke-[4] size-10 " +  (wordsLeftToday > 0 ? "opacity-0" : "opacity-100")} />
+            </span>
           </div>
         </form>
       </CardFooter>
