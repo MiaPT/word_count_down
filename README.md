@@ -25,6 +25,6 @@ Ideas to explore
 - use google docs api to automatically fetch new word count
 - several users on one project
 
-
 bugs
+
 - if user decreases the word count, words remaining today isn't calculated correctly

@@ -59,7 +59,10 @@ export function TrashIcon() {
   );
 }
 
-export function CheckmarkIcon({className}: {className: string}, visibility: string) {
+export function CheckmarkIcon(
+  { className }: { className: string },
+  visibility: string,
+) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -24,7 +24,6 @@ import { TConductorInstance } from "react-canvas-confetti/dist/types";
 export interface ProjectCardProps {
   project: WritingProject;
   addEntry: (e: Entry) => void;
-  shootConfetti: () => void
 }
 
 export function ProjectCard({ project, addEntry }: ProjectCardProps) {
@@ -34,30 +33,43 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
 
   const [newWordCount, setNewWordCount] = useState(project.currentCount);
 
-  const wordsLeftToday = wordsRemainingToday(project)
+  const wordsLeftToday = wordsRemainingToday(project);
 
-  const [confettiConductor, setConfettiConductor] = useState<null | TConductorInstance>(null)
-  const [fireworksConductor, setFireworksConductor] = useState<null | TConductorInstance>(null)
+  const [confettiConductor, setConfettiConductor] =
+    useState<null | TConductorInstance>(null);
+  const [fireworksConductor, setFireworksConductor] =
+    useState<null | TConductorInstance>(null);
 
-  const checkmarkContainerRef = useRef<HTMLSpanElement | null>(null)
+  const checkmarkContainerRef = useRef<HTMLSpanElement | null>(null);
 
-  const [SmallConfettiShot, setSmallConfettiShot] = useState(wordsLeftToday === 0)
-  const [fireworksShot, setFireworksShot] = useState(project.currentCount >= project.goalCount)
+  const [SmallConfettiShot, setSmallConfettiShot] = useState(
+    wordsLeftToday === 0,
+  );
+  const [fireworksShot, setFireworksShot] = useState(
+    project.currentCount >= project.goalCount,
+  );
 
   const computeConfettiPosition = () => {
-    let checkmarkPosition = checkmarkContainerRef.current?.getBoundingClientRect()
-    let confettiPosition = {
-      x: checkmarkPosition ? (checkmarkPosition.x + checkmarkPosition.width/2) / window.innerWidth : 0.5,
-      y: checkmarkPosition ? (checkmarkPosition.y + checkmarkPosition.height/2) / window.innerHeight : 0.5
-    }
-    return confettiPosition
-  }
+    const checkmarkPosition =
+      checkmarkContainerRef.current?.getBoundingClientRect();
+    const confettiPosition = {
+      x: checkmarkPosition
+        ? (checkmarkPosition.x + checkmarkPosition.width / 2) /
+          window.innerWidth
+        : 0.5,
+      y: checkmarkPosition
+        ? (checkmarkPosition.y + checkmarkPosition.height / 2) /
+          window.innerHeight
+        : 0.5,
+    };
+    return confettiPosition;
+  };
 
   function shootFireworks(i: number) {
     if (i > 0) {
-      fireworksConductor?.shoot()
-      fireworksConductor?.shoot()
-      setTimeout(() => shootFireworks(i-1), 600);
+      fireworksConductor?.shoot();
+      fireworksConductor?.shoot();
+      setTimeout(() => shootFireworks(i - 1), 600);
     }
   }
 
@@ -96,11 +108,11 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
             };
             addEntry(entry);
             if (!fireworksShot && entry.newCount >= project.goalCount) {
-              shootFireworks(3)
-              setFireworksShot(true)
+              shootFireworks(3);
+              setFireworksShot(true);
             } else if (!SmallConfettiShot && entry.diff >= wordsLeftToday) {
               confettiConductor?.shoot();
-              setSmallConfettiShot(true)
+              setSmallConfettiShot(true);
             }
           }}
         >
@@ -117,10 +129,23 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
               className="mr-1 w-2/5 sm:w-1/5"
             />
             <Button>Update</Button>
-            <Fireworks onInit={({conductor}) =>setFireworksConductor(conductor)}/>
-            <Realistic onInit={({conductor}) =>setConfettiConductor(conductor)} decorateOptions={(options) => ({...options, origin: computeConfettiPosition() })}/>
+            <Fireworks
+              onInit={({ conductor }) => setFireworksConductor(conductor)}
+            />
+            <Realistic
+              onInit={({ conductor }) => setConfettiConductor(conductor)}
+              decorateOptions={(options) => ({
+                ...options,
+                origin: computeConfettiPosition(),
+              })}
+            />
             <span ref={checkmarkContainerRef} className="ml-5">
-              <CheckmarkIcon className={"stroke-green-700 stroke-[4] size-10 " +  (wordsLeftToday > 0 ? "opacity-0" : "opacity-100")} />
+              <CheckmarkIcon
+                className={
+                  "size-10 stroke-green-700 stroke-[4] " +
+                  (wordsLeftToday > 0 ? "opacity-0" : "opacity-100")
+                }
+              />
             </span>
           </div>
         </form>
