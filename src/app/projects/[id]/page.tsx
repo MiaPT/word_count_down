@@ -4,9 +4,7 @@ import { useParams } from "next/navigation";
 import { useLocalStorage } from "usehooks-ts";
 import { WritingProject } from "~/types";
 import { projectDeserializer } from "~/lib/manageProjectFunctions";
-import {
-  generateGraphPoints_SingleProject,
-} from "~/lib/calculations";
+import { generateGraphPoints_SingleProject } from "~/lib/calculations";
 
 import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts";
 import {
