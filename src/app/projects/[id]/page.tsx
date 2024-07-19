@@ -1,11 +1,28 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { ResponsiveLine } from "@nivo/line";
 import { useLocalStorage } from "usehooks-ts";
 import { WritingProject } from "~/types";
 import { projectDeserializer } from "~/lib/manageProjectFunctions";
-import { projectsToGraphData } from "~/lib/calculations";
+import {
+  generateGraphPoints_SingleProject,
+} from "~/lib/calculations";
+
+import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "~/components/ui/chart";
 
 export default function ProjectPage() {
   const params = useParams<{ id: string }>();
@@ -33,103 +50,72 @@ export default function ProjectPage() {
     );
   }
 
-  const data = projectsToGraphData([project!]);
+  const chartData = generateGraphPoints_SingleProject(project!);
 
-  const theme = {
-    axis: {
-      legend: {
-        text: {
-          fill: "#a39f9f",
-        },
-      },
-      ticks: {
-        text: {
-          fontSize: 11,
-          fill: "#a39f9f",
-          outlineWidth: 0,
-          outlineColor: "transparent",
-        },
-      },
+  console.log("chartdata", chartData);
+
+  const chartConfig = {
+    written: {
+      label: "Words written:  ",
+      color: "#70b5ff",
     },
-    legends: {
-      text: {
-        fill: "#a39f9f",
-      },
-    },
-  };
+  } satisfies ChartConfig;
 
   return (
-    <div className="w-100 h-96 text-black">
-      <p className="text-white">Words written per day on {project?.title}</p>
-      <ResponsiveLine
-        data={data}
-        theme={theme}
-        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-        xScale={{ type: "point" }}
-        yScale={{
-          type: "linear",
-          min: "auto",
-          max: "auto",
-          stacked: true,
-          reverse: false,
-        }}
-        yFormat=" >-.2f"
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: "Dates",
-          legendOffset: 36,
-          legendPosition: "middle",
-          truncateTickAt: 0,
-        }}
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: "words written",
-          legendOffset: -40,
-          legendPosition: "middle",
-          truncateTickAt: 0,
-        }}
-        pointSize={10}
-        colors={{ scheme: "paired" }}
-        pointColor={{ theme: "background" }}
-        pointBorderWidth={2}
-        pointBorderColor={{ from: "serieColor" }}
-        pointLabel="data.yFormatted"
-        pointLabelYOffset={-12}
-        enableTouchCrosshair={true}
-        useMesh={true}
-        legends={[
-          {
-            anchor: "bottom-right",
-            direction: "column",
-            justify: false,
-            translateX: 100,
-            translateY: 0,
-            itemsSpacing: 0,
-            itemDirection: "left-to-right",
-            itemWidth: 80,
-            itemHeight: 20,
-            itemOpacity: 0.75,
-            symbolSize: 12,
-            symbolShape: "square",
-            symbolBorderColor: "rgba(0, 0, 0, .5)",
-            effects: [
-              {
-                on: "hover",
-                style: {
-                  itemBackground: "rgba(0, 0, 0, .03)",
-                  itemOpacity: 1,
-                },
-              },
-            ],
-          },
-        ]}
-      />
+    <div className="h-5">
+      <Card>
+        <CardHeader>
+          <CardTitle>Words written per day on {project?.title}</CardTitle>
+          <CardDescription>
+            {chartData[0]?.date} - {chartData[chartData.length - 1]?.date}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig} className="h-[50rem]">
+            <LineChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                top: 20,
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => value.slice(0, 3)} // eslint-disable-line
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="line" />}
+              />
+              <Line
+                dataKey="written"
+                type="natural"
+                stroke="var(--color-written)"
+                strokeWidth={2}
+                dot={{
+                  fill: "var(--color-written)",
+                }}
+                activeDot={{
+                  r: 6,
+                }}
+              >
+                <LabelList
+                  position="top"
+                  offset={12}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Line>
+            </LineChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
     </div>
   );
 }

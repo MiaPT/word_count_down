@@ -1,4 +1,6 @@
-import { Entry, GraphDataEntry, WritingProject } from "~/types";
+import {
+  WritingProject,
+} from "~/types";
 
 function areDatesEqual(d1: Date, d2: Date) {
   const date1 = new Date(d1.getDate(), d1.getMonth(), d1.getFullYear());
@@ -54,32 +56,22 @@ export function wordsRemainingToday(project: WritingProject) {
   );
 }
 
-function concatenateEntries(entries: Entry[]) {
-  const totalDiff = entries.map((e) => e.diff).reduce((a, b) => a + b, 0);
-  return { x: entries[0]!.date.toLocaleDateString(), y: totalDiff };
-}
+export function generateGraphPoints_SingleProject(project: WritingProject) {
 
-function entriesToGraphPoints(entries: Entry[]) {
-  const uniqueDates = Array.from(
-    new Set(entries.map((e) => e.date.toLocaleDateString())),
-  );
-  const datalist: { x: string; y: number }[] = [];
-  uniqueDates.forEach((d) =>
-    datalist.push(
-      concatenateEntries(
-        entries.filter((e) => e.date.toLocaleDateString() === d),
-      ),
-    ),
-  );
-  return datalist;
-}
+  const concatenatedEntries: { written?: number } = {};
 
-export function projectsToGraphData(
-  projects: WritingProject[],
-): GraphDataEntry[] {
-  return projects.map((p) => ({
-    id: p.title,
-    color: `hsl(${Math.floor(Math.random() * 359)}, 70%, 50%)`,
-    data: entriesToGraphPoints(p.entries),
-  }));
+  project.entries.forEach((e) => {
+    const date =
+      e.date.toLocaleDateString() as keyof typeof concatenatedEntries;
+    concatenatedEntries[date] = concatenatedEntries[date]
+      ? concatenatedEntries[date] + e.diff
+      : e.diff;
+  });
+
+  const graphData = [];
+  for (const [key, value] of Object.entries(concatenatedEntries)) {
+    graphData.push({ date: key, written: value });
+  }
+
+  return graphData;
 }

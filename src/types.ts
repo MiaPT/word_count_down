@@ -18,11 +18,3 @@ export declare type Entry = {
   date: Date;
 };
 
-export declare type GraphDataEntry = {
-  id: string;
-  color: string;
-  data: {
-    x: string | Date;
-    y: number;
-  }[];
-};
