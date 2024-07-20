@@ -21,6 +21,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "~/components/ui/chart";
+import { Button } from "~/components/ui/button";
+import { useState } from "react";
 
 export default function ProjectPage() {
   const params = useParams<{ id: string }>();
@@ -32,6 +34,8 @@ export default function ProjectPage() {
       deserializer: projectDeserializer,
     },
   );
+
+  const [includeInactiveDates, setIncludeInactiveDates] = useState(false);
 
   const project = projects.filter((p) => p.id === params.id)[0];
 
@@ -48,9 +52,8 @@ export default function ProjectPage() {
     );
   }
 
-  const chartData = generateGraphPoints_SingleProject(project!);
-
-  console.log("chartdata", chartData);
+  const [chartDataAllDates, chartDataActiveDates] =
+    generateGraphPoints_SingleProject(project!);
 
   const chartConfig = {
     written: {
@@ -64,15 +67,28 @@ export default function ProjectPage() {
       <Card>
         <CardHeader>
           <CardTitle>Words written per day on {project?.title}</CardTitle>
-          <CardDescription>
-            {chartData[0]?.date} - {chartData[chartData.length - 1]?.date}
-          </CardDescription>
+          <div className="flex flex-row justify-between">
+            <CardDescription>
+              {chartDataAllDates![0]?.date} -{" "}
+              {chartDataAllDates![chartDataAllDates!.length - 1]?.date}
+            </CardDescription>
+
+            <Button
+              onClick={() => setIncludeInactiveDates(!includeInactiveDates)}
+            >
+              {includeInactiveDates
+                ? "Show only dates with activity"
+                : "Show all dates"}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig} className="h-[50rem]">
             <LineChart
               accessibilityLayer
-              data={chartData}
+              data={
+                includeInactiveDates ? chartDataAllDates : chartDataActiveDates
+              }
               margin={{
                 top: 20,
                 left: 12,

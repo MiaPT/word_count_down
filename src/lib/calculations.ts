@@ -1,6 +1,4 @@
-import {
-  WritingProject,
-} from "~/types";
+import { WritingProject } from "~/types";
 
 function areDatesEqual(d1: Date, d2: Date) {
   const date1 = new Date(d1.getDate(), d1.getMonth(), d1.getFullYear());
@@ -56,22 +54,48 @@ export function wordsRemainingToday(project: WritingProject) {
   );
 }
 
-export function generateGraphPoints_SingleProject(project: WritingProject) {
+const getDaysArray = function (start: Date, end: Date) {
+  const arr = [];
+  for (
+    const dt = new Date(start);
+    dt <= new Date(end);
+    dt.setDate(dt.getDate() + 1)
+  ) {
+    arr.push(new Date(dt));
+  }
+  return arr;
+};
 
+export function generateGraphPoints_SingleProject(project: WritingProject) {
   const concatenatedEntries: { written?: number } = {};
+
+  const firstDate = project.entries[0]?.date;
+  const lastDate = project.entries[project.entries.length - 1]?.date;
+
+  const daylist = getDaysArray(firstDate!, lastDate!).map((v) =>
+    v.toLocaleDateString(),
+  );
+
+  daylist.forEach((d) => {
+    concatenatedEntries[d as keyof typeof concatenatedEntries] = 0;
+  });
 
   project.entries.forEach((e) => {
     const date =
       e.date.toLocaleDateString() as keyof typeof concatenatedEntries;
-    concatenatedEntries[date] = concatenatedEntries[date]
-      ? concatenatedEntries[date] + e.diff
-      : e.diff;
+    concatenatedEntries[date] = concatenatedEntries[date]! + e.diff;
   });
 
-  const graphData = [];
+  const graphDataAllDates = [];
+  const graphDataActiveDates = [];
+
   for (const [key, value] of Object.entries(concatenatedEntries)) {
-    graphData.push({ date: key, written: value });
+    const data = { date: key, written: value };
+    graphDataAllDates.push(data);
+    if (data.written !== 0) {
+      graphDataActiveDates.push(data);
+    }
   }
 
-  return graphData;
+  return [graphDataAllDates, graphDataActiveDates];
 }
