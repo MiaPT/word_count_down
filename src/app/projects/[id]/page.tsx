@@ -176,7 +176,7 @@ export default function ProjectPage() {
         </CardHeader>
         <CardContent>
           <div >
-            <ChartContainer  config={chartConfig} className="h-[50rem] max-w-xs visible xl:invisible xl:max-w-0 xl:max-h-0">
+            <ChartContainer  config={chartConfig} className="h-[50rem] max-w-xs visible sm:invisible sm:max-w-0 sm:max-h-0">
               {barChart}
             </ChartContainer>
             <ChartContainer config={chartConfig} className="invisible h-0 sm:visible sm:h-[50rem]">
