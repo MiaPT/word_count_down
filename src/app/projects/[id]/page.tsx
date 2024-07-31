@@ -6,7 +6,16 @@ import { WritingProject } from "~/types";
 import { projectDeserializer } from "~/lib/manageProjectFunctions";
 import { generateGraphPoints_SingleProject } from "~/lib/calculations";
 
-import { Bar, BarChart, CartesianGrid, LabelList, Line, LineChart, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  LabelList,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+} from "recharts";
 import {
   Card,
   CardContent,
@@ -62,97 +71,83 @@ export default function ProjectPage() {
     },
   } satisfies ChartConfig;
 
-
   const lineChart = (
     <LineChart
-    accessibilityLayer
-    data={
-      includeInactiveDates ? chartDataAllDates : chartDataActiveDates
-    }
-    margin={{
-      top: 20,
-      left: 12,
-      right: 12,
-    }}
-  >
-    <CartesianGrid vertical={false} />
-    <XAxis
-      dataKey="date"
-      tickLine={false}
-      axisLine={false}
-      tickMargin={8}
-      tickFormatter={(value) => value.slice(0, 3)} // eslint-disable-line
-    />
-    <ChartTooltip
-      cursor={false}
-      content={<ChartTooltipContent indicator="line" />}
-    />
-    <Line
-      dataKey="written"
-      type="natural"
-      stroke="var(--color-written)"
-      strokeWidth={2}
-      dot={{
-        fill: "var(--color-written)",
-      }}
-      activeDot={{
-        r: 6,
+      accessibilityLayer
+      data={includeInactiveDates ? chartDataAllDates : chartDataActiveDates}
+      margin={{
+        top: 20,
+        left: 12,
+        right: 12,
       }}
     >
-      <LabelList
-        position="top"
-        offset={12}
-        className="fill-foreground"
-        fontSize={12}
+      <CartesianGrid vertical={false} />
+      <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
+      <ChartTooltip
+        cursor={false}
+        content={<ChartTooltipContent indicator="line" />}
       />
-    </Line>
-  </LineChart>
-  )
+      <Line
+        dataKey="written"
+        type="natural"
+        stroke="var(--color-written)"
+        strokeWidth={2}
+        dot={{
+          fill: "var(--color-written)",
+        }}
+        activeDot={{
+          r: 6,
+        }}
+      >
+        <LabelList
+          position="top"
+          offset={12}
+          className="fill-foreground"
+          fontSize={12}
+        />
+      </Line>
+    </LineChart>
+  );
 
   const barChart = (
     <BarChart
-      
       accessibilityLayer
-      data={
-        includeInactiveDates ? chartDataAllDates : chartDataActiveDates
-      }
+      data={includeInactiveDates ? chartDataAllDates : chartDataActiveDates}
       layout="vertical"
       margin={{
         right: 16,
-      }}>
-        <CartesianGrid horizontal={false} />
-            <YAxis
-              dataKey="date"
-              type="category"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-              hide
-            />
-            <XAxis dataKey="written" type="number" hide />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
-            />
-            <Bar
-              dataKey="written"
-              layout="vertical"
-              fill="var(--color-written)"
-              radius={4}
-            >
-              <LabelList
-                dataKey="written"
-                position="insideLeft"
-                offset={8}
-                className="fill-foreground"
-                fontSize={12}
-              />
-            </Bar>
+      }}
+    >
+      <CartesianGrid horizontal={false} />
+      <YAxis
+        dataKey="date"
+        type="category"
+        tickLine={false}
+        tickMargin={10}
+        axisLine={false}
+        hide
+      />
+      <XAxis dataKey="written" type="number" hide />
+      <ChartTooltip
+        cursor={false}
+        content={<ChartTooltipContent indicator="line" />}
+      />
+      <Bar
+        dataKey="written"
+        layout="vertical"
+        fill="var(--color-written)"
+        radius={4}
+      >
+        <LabelList
+          dataKey="written"
+          position="insideLeft"
+          offset={8}
+          className="fill-foreground"
+          fontSize={12}
+        />
+      </Bar>
     </BarChart>
-  )
-
-
+  );
 
   return (
     <div className="h-5">
@@ -175,11 +170,17 @@ export default function ProjectPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div >
-            <ChartContainer  config={chartConfig} className="h-[50rem] max-w-xs visible sm:invisible sm:max-w-0 sm:max-h-0">
+          <div>
+            <ChartContainer
+              config={chartConfig}
+              className="visible h-[50rem] max-w-xs sm:invisible sm:max-h-0 sm:max-w-0"
+            >
               {barChart}
             </ChartContainer>
-            <ChartContainer config={chartConfig} className="invisible h-0 sm:visible sm:h-[50rem]">
+            <ChartContainer
+              config={chartConfig}
+              className="invisible h-0 sm:visible sm:h-[50rem]"
+            >
               {lineChart}
             </ChartContainer>
           </div>
