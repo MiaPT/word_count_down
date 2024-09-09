@@ -31,7 +31,7 @@ import {
   ChartTooltipContent,
 } from "~/components/ui/chart";
 import { Button } from "~/components/ui/button";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function ProjectPage() {
   const params = useParams<{ id: string }>();
@@ -61,8 +61,10 @@ export default function ProjectPage() {
     );
   }
 
-  const [chartDataAllDates, chartDataActiveDates] =
-    generateGraphPoints_SingleProject(project!);
+  const [chartDataAllDates, chartDataActiveDates] = useMemo(
+    () => generateGraphPoints_SingleProject(project!),
+    [project?.entries],
+  );
 
   const chartConfig = {
     written: {
