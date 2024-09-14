@@ -30,28 +30,25 @@ export function daysLeft(project: WritingProject) {
 // }
 
 export function wordsRemainingToday(project: WritingProject) {
-  const today = new Date();
   const remainingTotal = Math.max(project.goalCount - project.currentCount, 0);
-  const days = daysLeft(project);
+  const daysRemaining = daysLeft(project);
 
-  if (days <= 0 || remainingTotal == 0) {
+  if (daysRemaining <= 0 || remainingTotal === 0) {
     return remainingTotal;
   }
 
+  const today = new Date();
+  const dailyTarget = Math.round(remainingTotal / daysRemaining);
+
   if (!areDatesEqual(project.edited, today)) {
-    const remaining = Math.round(remainingTotal / daysLeft(project));
-    return Math.max(remaining, 0);
+    return dailyTarget;
   }
 
   const writtenToday = project.entries
     .filter((e) => areDatesEqual(e.date, today))
-    .map((e) => e.diff)
-    .reduce((total, current) => total + current, 0);
-  return Math.max(
-    Math.round((remainingTotal + writtenToday) / daysLeft(project)) -
-      writtenToday,
-    0,
-  );
+    .reduce((total, e) => total + e.diff, 0);
+
+  return Math.max(dailyTarget - writtenToday, 0);
 }
 
 const getDaysArray = function (start: Date, end: Date) {
