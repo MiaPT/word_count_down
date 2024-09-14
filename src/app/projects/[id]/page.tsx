@@ -51,7 +51,12 @@ export default function ProjectPage() {
   const uniqueDates = Array.from(
     new Set(project!.entries.map((e) => e.date.toLocaleDateString())),
   );
-
+  
+  const [chartDataAllDates, chartDataActiveDates] = useMemo(
+    () => generateGraphPoints_SingleProject(project!),
+    [project?.entries],
+    );
+    
   if (uniqueDates.length < 2) {
     return (
       <p>
@@ -60,12 +65,7 @@ export default function ProjectPage() {
       </p>
     );
   }
-
-  const [chartDataAllDates, chartDataActiveDates] = useMemo(
-    () => generateGraphPoints_SingleProject(project!),
-    [project?.entries],
-  );
-
+    
   const chartConfig = {
     written: {
       label: "Words written:  ",
