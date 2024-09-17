@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { CreationDialog } from "~/components/creationDialog";
 import { ProjectCard } from "~/components/projectCard";
@@ -7,13 +8,14 @@ import { projectDeserializer } from "~/lib/manageProjectFunctions";
 import { Entry, WritingProject } from "~/types";
 
 export default function HomePage() {
-  const [projects, saveProjects] = useLocalStorage<WritingProject[]>(
-    "projects",
-    [],
-    {
-      deserializer: projectDeserializer,
-    },
-  );
+  const [projects, setProjects] = useState<WritingProject[]>([]);
+
+  useEffect(() => {
+    const storedProjects = localStorage.getItem("projects");
+    if (storedProjects) {
+      setProjects(projectDeserializer(storedProjects));
+    }
+  }, []);
 
   function addEntry(projectId: string, entry: Entry) {
     // Maybe use deepcopy later
@@ -21,14 +23,13 @@ export default function HomePage() {
     project?.entries.push(entry);
     project.currentCount = entry.newCount;
     project.edited = new Date();
-    saveProjects(projects);
+    setProjects(projects);
   }
 
   return (
     <main className="flex flex-col items-center">
       <div
         className="grid md:grid-cols-1 xl:grid-cols-2"
-        suppressHydrationWarning={true}
       >
         {projects
           .filter((p) => p.archived === false)
