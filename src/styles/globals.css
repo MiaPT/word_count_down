@@ -39,6 +39,12 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    
+    --tw-gradient-primary: linear-gradient(to right, #70d6ff, #ff70a6, #ff9770);
+    --tw-gradient-secondary: linear-gradient(to right, #ff9770, #ff70a6, #70d6ff);
+    --tw-gradient-blue-to-pink: linear-gradient(to right, #70d6ff, #ff70a6);
+    --tw-gradient-pink-to-orange: linear-gradient(to right, #ff70a6, #ff9770);
+    --tw-gradient-tilted: linear-gradient(to top left, #70d6ff, #ff70a6, #ff9770);
   }
 
   .dark {
@@ -75,6 +81,30 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    --tw-gradient-primary: linear-gradient(to right, #70d6ff, #ff70a6, #ff9770);
+    --tw-gradient-secondary: linear-gradient(to right, #ff9770, #ff70a6, #70d6ff);
+    --tw-gradient-blue-to-pink: linear-gradient(to right, #70d6ff, #ff70a6);
+    --tw-gradient-pink-to-orange: linear-gradient(to right, #ff70a6, #ff9770);
+    --tw-gradient-tilted: linear-gradient(to top left, #70d6ff, #ff70a6, #ff9770);
+  }
+}
+
+@layer utilities {
+  .bg-gradient-primary {
+    background-image: var(--tw-gradient-primary);
+  }
+  .bg-gradient-secondary {
+    background-image: var(--tw-gradient-secondary);
+  }
+  .bg-gradient-blue-to-pink {
+    background-image: var(--tw-gradient-blue-to-pink);
+  }
+  .bg-gradient-pink-to-orange {
+    background-image: var(--tw-gradient-pink-to-orange);
+  }
+  .bg-gradient-tilted {
+    background-image: var(--tw-gradient-tilted);
   }
 }
 

@@ -92,7 +92,7 @@ export function CreationDialog() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="bg-gradient-to-tl from-[#70b5ff] via-[#d74e83] to-[#e77951] opacity-80 transition-opacity duration-300 hover:opacity-100"
+          className="bg-gradient-tilted opacity-80 transition-opacity duration-300 hover:opacity-100"
         >
           New project
         </Button>
