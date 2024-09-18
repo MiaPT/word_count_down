@@ -18,9 +18,7 @@ export default function ArchivePage() {
 
   return (
     <main className="flex flex-col items-center">
-      <div
-        className="grid md:grid-cols-1 xl:grid-cols-2"
-      >
+      <div className="grid md:grid-cols-1 xl:grid-cols-2">
         {projects
           .filter((p) => p.archived === true)
           .map((p) => (

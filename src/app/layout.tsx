@@ -3,6 +3,7 @@ import { TooltipProvider } from "../components/ui/tooltip";
 import { Inter } from "next/font/google";
 import { TopNav } from "~/components/topnav";
 import { Toaster } from "../components/ui/sonner";
+import { ClerkProvider } from "@clerk/nextjs";
 import React from "react";
 
 const inter = Inter({
@@ -22,14 +23,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`font-sans ${inter.variable} dark`}>
-        <TooltipProvider delayDuration={100}>
-          <TopNav />
-          {children}
-        </TooltipProvider>
-        <Toaster />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`font-sans ${inter.variable} dark`}>
+          <TooltipProvider delayDuration={100}>
+            <TopNav />
+            {children}
+          </TooltipProvider>
+          <Toaster />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
