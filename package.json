@@ -18,8 +18,8 @@
       "pre-commit": "lint-staged"
     }
   },
-  "lint-staged":{
-    "**/*.{js,jsx,ts,tsx}":[
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
       "npx prettier --write",
       "npx eslint --fix"
     ]
@@ -27,6 +27,7 @@
   "dependencies": {
     "@clerk/nextjs": "^5.5.5",
     "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-hover-card": "^1.1.1",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-popover": "^1.0.7",
     "@radix-ui/react-slot": "^1.0.2",
