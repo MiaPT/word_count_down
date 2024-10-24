@@ -1,6 +1,6 @@
 "use client";
 
-import { Entry, WritingProject } from "~/types";
+import { Entry, type WritingProject } from "~/types";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -18,17 +18,38 @@ import { nanoid } from "nanoid";
 import { useLocalStorage } from "usehooks-ts";
 import { useState } from "react";
 import { DatePicker } from "./datePicker";
+import { useAuth } from "@clerk/nextjs";
 
-function generateEntries(startCount: number, startDate: Date): Entry[] {
-  if (startCount === 0 || startDate === new Date()) {
-    return [{ newCount: startCount, date: new Date(), diff: startCount }];
+// function generateEntries(startCount: number, startDate: Date): Entry[] {
+//   if (startCount === 0 || startDate === new Date()) {
+//     return [{ newCount: startCount, date: new Date(), diff: startCount }];
+//   }
+
+//   return [{ newCount: startCount, date: new Date(), diff: startCount }];
+// }
+
+type ProjectResponse = {
+  message: string;
+  project: WritingProject;
+};
+
+async function saveProjectDB(project: WritingProject) {
+  const response = await fetch("/api/project", {
+    method: "POST",
+    body: JSON.stringify(project),
+  });
+  if (response.ok) {
+    const data: ProjectResponse = (await response.json()) as ProjectResponse;
+    return { message: data.message, status: 200, project: data.project };
+  } else {
+    return { message: "Failed to add project", status: 500, project: null };
   }
-
-  return [{ newCount: startCount, date: new Date(), diff: startCount }];
 }
 
 export function CreationDialog() {
   const today = new Date();
+
+  const { isSignedIn } = useAuth();
 
   const [title, setTitle] = useState("");
   const [goalCount, setGoalCount] = useState<number | undefined>();
@@ -55,6 +76,8 @@ export function CreationDialog() {
     createdOn: new Date(),
     edited: new Date(),
     endDate: endDate,
+    // for the graph to start on the first day of the project,
+    // an entry is created no matter if the start count is 0 or not
     entries: [{ newCount: startCount, date: startDate!, diff: startCount }],
     archived: false,
   };
@@ -153,9 +176,16 @@ export function CreationDialog() {
           <DialogClose className="mx-auto" disabled={saveDisabled}>
             <Button
               disabled={saveDisabled}
-              onClick={() => {
-                saveProjects([...projects, proj as WritingProject]);
-                emptyForm();
+              onClick={async () => {
+                if (isSignedIn) {
+                  const response = await saveProjectDB(proj as WritingProject);
+                  if (response.status === 200) {
+                    emptyForm();
+                  }
+                } else {
+                  saveProjects([...projects, proj as WritingProject]);
+                  emptyForm();
+                }
               }}
             >
               Save

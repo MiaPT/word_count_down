@@ -8,6 +8,9 @@ import {
   serial,
   timestamp,
   varchar,
+  integer,
+  boolean,
+  text,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -18,17 +21,42 @@ import {
  */
 export const createTable = pgTableCreator((name) => `word-count-down_${name}`);
 
-export const posts = createTable(
-  "post",
+export const writingProjects = createTable(
+  "writing_project",
   {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdAt: timestamp("created_at")
+    id: varchar("id", { length: 36 }).primaryKey(),
+    title: varchar("title", { length: 256 }).notNull(),
+    goalCount: integer("goal_count").notNull(),
+    currentCount: integer("current_count").notNull(),
+    createdOn: timestamp("created_on")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt"),
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date").notNull(),
+    edited: timestamp("edited")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    url: text("url"),
+    archived: boolean("archived").notNull(),
+    userId: varchar("user_id", { length: 36 }).notNull(),
   },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
+  (project) => ({
+    userIdIndex: index("user_id_idx").on(project.userId),
+  }),
+);
+
+export const entries = createTable(
+  "entry",
+  {
+    id: serial("id").primaryKey(),
+    newCount: integer("new_count").notNull(),
+    diff: integer("diff").notNull(),
+    date: timestamp("date")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    projectId: varchar("project_id", { length: 36 }).notNull(),
+  },
+  (entry) => ({
+    projectIdIndex: index("project_id_idx").on(entry.projectId),
   }),
 );
