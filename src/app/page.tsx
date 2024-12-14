@@ -24,7 +24,6 @@ export default function HomePage() {
     }
   }, []);
 
-
   // TODO: why did I put this function here? move?
   function addEntry(projectId: string, entry: Entry) {
     // Maybe use deepcopy later
@@ -37,9 +36,7 @@ export default function HomePage() {
 
   return (
     <main className="flex flex-col items-center">
-      <div
-        className="grid md:grid-cols-1 xl:grid-cols-2"
-      >
+      <div className="grid md:grid-cols-1 xl:grid-cols-2">
         {projects
           .filter((p) => p.archived === false)
           .map((p) => (

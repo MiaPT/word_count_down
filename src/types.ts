@@ -17,4 +17,3 @@ export declare type Entry = {
   diff: number;
   date: Date;
 };
-
