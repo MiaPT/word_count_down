@@ -7,7 +7,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -36,8 +35,6 @@ interface EditDialogProps {
 }
 
 export function EditDialog({ project }: EditDialogProps) {
-  const today = new Date();
-
   const [title, setTitle] = useState(project.title);
   const [goalCount, setGoalCount] = useState<number | undefined>(
     project.goalCount,

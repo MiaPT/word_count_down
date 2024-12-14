@@ -7,14 +7,13 @@ import { projectDeserializer } from "~/lib/manageProjectFunctions";
 import { WritingProject } from "~/types";
 
 export default function ArchivePage() {
-  const [projects, setProjects] = useState<WritingProject[]>([]);
-
-  useEffect(() => {
-    const storedProjects = localStorage.getItem("projects");
-    if (storedProjects) {
-      setProjects(projectDeserializer(storedProjects));
+  const [projects, saveProjects] = useLocalStorage<WritingProject[]>(
+    "projects",
+    [],
+    {
+      deserializer: projectDeserializer,
     }
-  }, []);
+  );
 
   return (
     <main className="flex flex-col items-center">
@@ -26,7 +25,7 @@ export default function ArchivePage() {
               key={p.id}
               project={p}
               projects={projects}
-              saveProjects={setProjects}
+              saveProjects={saveProjects}
             />
           ))}
       </div>

@@ -20,7 +20,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -31,19 +30,18 @@ import {
   ChartTooltipContent,
 } from "~/components/ui/chart";
 import { Button } from "~/components/ui/button";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function ProjectPage() {
   const params = useParams<{ id: string }>();
-  const [projects, setProjects] = useState<WritingProject[]>([]);
   const [includeInactiveDates, setIncludeInactiveDates] = useState(false);
-
-  useEffect(() => {
-    const storedProjects = localStorage.getItem("projects");
-    if (storedProjects) {
-      setProjects(projectDeserializer(storedProjects));
+  const [projects, saveProjects] = useLocalStorage<WritingProject[]>(
+    "projects",
+    [],
+    {
+      deserializer: projectDeserializer,
     }
-  }, []);
+  );  
 
   const project = projects.filter((p) => p.id === params.id)[0];
 

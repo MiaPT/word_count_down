@@ -1,12 +1,11 @@
 "use client";
 
-import { Entry, WritingProject } from "~/types";
+import { WritingProject } from "~/types";
 import { Button } from "./ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -19,13 +18,6 @@ import { useLocalStorage } from "usehooks-ts";
 import { useState } from "react";
 import { DatePicker } from "./datePicker";
 
-function generateEntries(startCount: number, startDate: Date): Entry[] {
-  if (startCount === 0 || startDate === new Date()) {
-    return [{ newCount: startCount, date: new Date(), diff: startCount }];
-  }
-
-  return [{ newCount: startCount, date: new Date(), diff: startCount }];
-}
 
 export function CreationDialog() {
   const today = new Date();

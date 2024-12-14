@@ -11,7 +11,6 @@ import {
 } from "./ui/card";
 import { WritingProject } from "~/types";
 import Link from "next/link";
-import { useState } from "react";
 import { ArrowRightIcon, TrashIcon, UnarchiveIcon } from "./ui/SVGIcons";
 import { TooltipContent, TooltipTrigger, Tooltip } from "./ui/tooltip";
 import { DeleteProject, SetIsArchived } from "~/lib/manageProjectFunctions";
@@ -28,12 +27,7 @@ export function ArchivedCard({
   projects,
   saveProjects,
 }: ArchivedCardProps) {
-  const daysLeft = Math.round(
-    (project.endDate.getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000),
-  );
-
-  const [newWordCount, setNewWordCount] = useState(project.currentCount);
-
+  
   const wordsLeftTotal = project.goalCount - project.currentCount;
 
   return (
