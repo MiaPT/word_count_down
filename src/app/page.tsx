@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { CreationDialog } from "~/components/creationDialog";
 import { ProjectCard } from "~/components/projectCard";
+import { addExampleProject } from "~/lib/generateExample";
 import { projectDeserializer } from "~/lib/manageProjectFunctions";
 import { Entry, WritingProject } from "~/types";
 
@@ -12,11 +13,19 @@ export default function HomePage() {
 
   useEffect(() => {
     const storedProjects = localStorage.getItem("projects");
-    if (storedProjects) {
+    console.log(storedProjects);
+    if (storedProjects && storedProjects != "[]") {
       setProjects(projectDeserializer(storedProjects));
+    } else {
+      const exampleProject = addExampleProject();
+      setProjects([exampleProject]);
+
+      localStorage.setItem("projects", JSON.stringify([exampleProject]));
     }
   }, []);
 
+
+  // TODO: why did I put this function here? move?
   function addEntry(projectId: string, entry: Entry) {
     // Maybe use deepcopy later
     const project = projects.find((p) => p.id === projectId)!;

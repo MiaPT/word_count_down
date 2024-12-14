@@ -10,6 +10,7 @@ TODO
 - [ ] detail page for each project, with statistics (there is a graph now but the whole thing needs more work)
 - [ ] connect to db
 - [ ] make confetti fancier??
+- [ ] switch to using dayjs for date handling
 
 Todo after that, in no particular order for now:
 
