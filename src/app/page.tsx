@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { json } from "stream/consumers";
 import { useLocalStorage } from "usehooks-ts";
 import { CreationDialog } from "~/components/creationDialog";
 import { ProjectCard } from "~/components/projectCard";
@@ -9,26 +10,27 @@ import { projectDeserializer } from "~/lib/manageProjectFunctions";
 import { Entry, WritingProject } from "~/types";
 
 export default function HomePage() {
-  const [projects, setProjects] = useState<WritingProject[]>([]);
+
+  const [projects, setProjects] = useLocalStorage<WritingProject[]>(
+    "projects",
+    [],
+    {
+      deserializer: projectDeserializer,
+    }
+  );
+
 
   useEffect(() => {
-    const storedProjects = localStorage.getItem("projects");
-    console.log(storedProjects);
-    if (storedProjects && storedProjects != "[]") {
-      setProjects(projectDeserializer(storedProjects));
-    } else {
+    if (projects.length === 0) {
       const exampleProject = addExampleProject();
       setProjects([exampleProject]);
-
-      localStorage.setItem("projects", JSON.stringify([exampleProject]));
     }
   }, []);
 
-  // TODO: why did I put this function here? move?
+  // TODO: why did I put this function here? move? does it need to be here?
   function addEntry(projectId: string, entry: Entry) {
-    // Maybe use deepcopy later
-    const project = projects.find((p) => p.id === projectId)!;
-    project?.entries.push(entry);
+    const project = structuredClone(projects.find((p) => p.id === projectId)!);
+    project.entries.push(entry);
     project.currentCount = entry.newCount;
     project.edited = new Date();
     setProjects(projects);
