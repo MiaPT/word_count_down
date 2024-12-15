@@ -144,7 +144,7 @@ export function EditDialog({
                     onClick={() => {
                       saveProject({
                         ...project,
-                        archived: true,
+                        isArchived: true,
                       });
                       toast("Project archived", {
                         action: {
@@ -152,7 +152,7 @@ export function EditDialog({
                           onClick: () =>
                             saveProject({
                               ...project,
-                              archived: false,
+                              isArchived: false,
                             }),
                         },
                       });

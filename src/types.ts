@@ -3,17 +3,17 @@ export declare type WritingProject = {
   title: string;
   goalCount: number;
   currentCount: number;
-  createdOn?: Date; //TODO: make this mandatory
+  createdOn: Date;
   startDate: Date;
   endDate: Date;
-  edited: Date;
+  lastModified: Date;
   url?: string;
-  archived: boolean;
+  isArchived: boolean;
   entries: Entry[];
 };
 
 export declare type Entry = {
-  newCount: number;
+  newTotal: number;
   diff: number;
   date: Date;
 };

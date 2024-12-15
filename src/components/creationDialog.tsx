@@ -47,10 +47,10 @@ export function CreationDialog({ addProject }: CreationDialogProps) {
     currentCount: startCount,
     startDate: startDate,
     createdOn: new Date(),
-    edited: new Date(),
+    lastModified: new Date(),
     endDate: endDate,
-    entries: [{ newCount: startCount, date: startDate!, diff: startCount }],
-    archived: false,
+    entries: [{ newTotal: startCount, date: startDate!, diff: startCount }],
+    isArchived: false,
   };
 
   function emptyForm() {

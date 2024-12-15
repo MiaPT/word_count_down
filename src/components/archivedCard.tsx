@@ -42,7 +42,7 @@ export function ArchivedCard({
           </div>
         </div>
         <CardDescription>
-          Archived on: {project.edited.toDateString()} | Completed:{" "}
+          Archived on: {project.lastModified.toDateString()} | Completed:{" "}
           {wordsLeftTotal > 0 ? `No - ${wordsLeftTotal} words missing` : "Yes"}
         </CardDescription>
       </CardHeader>
@@ -79,7 +79,7 @@ export function ArchivedCard({
               onClick={() => {
                 saveProject({
                   ...project,
-                  archived: false,
+                  isArchived: false,
                 });
                 toast("Project un-archived", {
                   action: {
@@ -87,7 +87,7 @@ export function ArchivedCard({
                     onClick: () =>
                       saveProject({
                         ...project,
-                        archived: true,
+                        isArchived: true,
                       }),
                   },
                 });

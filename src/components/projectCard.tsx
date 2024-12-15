@@ -111,17 +111,17 @@ export function ProjectCard({
           onSubmit={(e) => {
             e.preventDefault();
             const entry: Entry = {
-              newCount: newWordCount,
+              newTotal: newWordCount,
               diff: newWordCount - project.currentCount,
               date: new Date(),
             };
             saveProject({
               ...project,
               entries: [...project.entries, entry],
-              currentCount: entry.newCount,
-              edited: new Date(),
+              currentCount: entry.newTotal,
+              lastModified: new Date(),
             });
-            if (!fireworksShot && entry.newCount >= project.goalCount) {
+            if (!fireworksShot && entry.newTotal >= project.goalCount) {
               shootFireworks(3);
               setFireworksShot(true);
             } else if (!SmallConfettiShot && entry.diff >= wordsLeftToday) {

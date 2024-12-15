@@ -40,7 +40,7 @@ export function wordsRemainingToday(project: WritingProject) {
   const today = new Date();
   const dailyTarget = Math.round(remainingTotal / daysRemaining);
 
-  if (!areDatesEqual(project.edited, today)) {
+  if (!areDatesEqual(project.lastModified, today)) {
     return dailyTarget;
   }
 
