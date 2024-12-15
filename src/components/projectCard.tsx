@@ -19,7 +19,7 @@ import { useRef, useState } from "react";
 import { ArrowRightIcon, CheckmarkIcon } from "./ui/SVGIcons";
 import Realistic from "react-canvas-confetti/dist/presets/realistic";
 import Fireworks from "react-canvas-confetti/dist/presets/fireworks";
-import { TConductorInstance } from "react-canvas-confetti/dist/types";
+import { useConfetti } from "~/lib/useConfetti";
 
 export interface ProjectCardProps {
   project: WritingProject;
@@ -36,47 +36,18 @@ export function ProjectCard({
     (project.endDate.getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000),
   );
 
+  const {
+    checkmarkContainerRef,
+    computeConfettiPosition,
+    shootConfetti,
+    shootFireworks,
+    setConfettiConductor,
+    setFireworksConductor,
+  } = useConfetti(project);
+
   const [newWordCount, setNewWordCount] = useState(project.currentCount);
 
   const wordsLeftToday = wordsRemainingToday(project);
-
-  const [confettiConductor, setConfettiConductor] =
-    useState<null | TConductorInstance>(null);
-  const [fireworksConductor, setFireworksConductor] =
-    useState<null | TConductorInstance>(null);
-
-  const checkmarkContainerRef = useRef<HTMLSpanElement | null>(null);
-
-  const [SmallConfettiShot, setSmallConfettiShot] = useState(
-    wordsLeftToday === 0,
-  );
-  const [fireworksShot, setFireworksShot] = useState(
-    project.currentCount >= project.goalCount,
-  );
-
-  const computeConfettiPosition = () => {
-    const checkmarkPosition =
-      checkmarkContainerRef.current?.getBoundingClientRect();
-    const confettiPosition = {
-      x: checkmarkPosition
-        ? (checkmarkPosition.x + checkmarkPosition.width / 2) /
-          window.innerWidth
-        : 0.5,
-      y: checkmarkPosition
-        ? (checkmarkPosition.y + checkmarkPosition.height / 2) /
-          window.innerHeight
-        : 0.5,
-    };
-    return confettiPosition;
-  };
-
-  function shootFireworks(i: number) {
-    if (i > 0) {
-      fireworksConductor?.shoot();
-      fireworksConductor?.shoot();
-      setTimeout(() => shootFireworks(i - 1), 600);
-    }
-  }
 
   return (
     <Card className="group m-5 w-[350px] sm:w-[500px]">
@@ -121,12 +92,10 @@ export function ProjectCard({
               currentCount: entry.newTotal,
               lastModified: new Date(),
             });
-            if (!fireworksShot && entry.newTotal >= project.goalCount) {
+            if (entry.newTotal >= project.goalCount) {
               shootFireworks(3);
-              setFireworksShot(true);
-            } else if (!SmallConfettiShot && entry.diff >= wordsLeftToday) {
-              confettiConductor?.shoot();
-              setSmallConfettiShot(true);
+            } else if (entry.diff >= wordsLeftToday) {
+              shootConfetti();
             }
           }}
         >
