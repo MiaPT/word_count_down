@@ -36,17 +36,19 @@ export function wordsRemainingToday(project: WritingProject) {
   if (daysRemaining <= 0 || remainingTotal === 0) {
     return remainingTotal;
   }
-
   const today = new Date();
-  const dailyTarget = Math.round(remainingTotal / daysRemaining);
-
-  if (!areDatesEqual(project.lastModified, today)) {
-    return dailyTarget;
-  }
 
   const writtenToday = project.entries
     .filter((e) => areDatesEqual(e.date, today))
     .reduce((total, e) => total + e.diff, 0);
+
+  const dailyTarget = Math.round(
+    (remainingTotal + writtenToday) / daysRemaining,
+  );
+
+  if (!areDatesEqual(project.lastModified, today)) {
+    return dailyTarget;
+  }
 
   return Math.max(dailyTarget - writtenToday, 0);
 }
