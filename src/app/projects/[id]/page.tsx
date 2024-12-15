@@ -1,9 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useLocalStorage } from "usehooks-ts";
-import { WritingProject } from "~/types";
-import { projectDeserializer } from "~/lib/manageProjectFunctions";
+import { useProjects } from "~/lib/useProjects";
 import { generateGraphPoints_SingleProject } from "~/lib/calculations";
 
 import {
@@ -35,15 +33,10 @@ import { useMemo, useState } from "react";
 export default function ProjectPage() {
   const params = useParams<{ id: string }>();
   const [includeInactiveDates, setIncludeInactiveDates] = useState(false);
-  const [projects, saveProjects] = useLocalStorage<WritingProject[]>(
-    "projects",
-    [],
-    {
-      deserializer: projectDeserializer,
-    },
-  );
 
-  const project = projects.filter((p) => p.id === params.id)[0];
+  const { projects } = useProjects();
+
+  const project = projects.find((p) => p.id === params.id);
 
   const [chartDataAllDates, chartDataActiveDates] = useMemo(() => {
     if (!project) {

@@ -1,47 +1,20 @@
 "use client";
 
 import { useEffect } from "react";
-import { useLocalStorage } from "usehooks-ts";
 import { CreationDialog } from "~/components/creationDialog";
 import { ProjectCard } from "~/components/projectCard";
 import { addExampleProject } from "~/lib/generateExample";
-import { projectDeserializer } from "~/lib/manageProjectFunctions";
-import { WritingProject } from "~/types";
+import { useProjects } from "~/lib/useProjects";
 
 export default function HomePage() {
-  const [projects, setProjects] = useLocalStorage<WritingProject[]>(
-    "projects",
-    [],
-    {
-      deserializer: projectDeserializer,
-    },
-  );
+  const { projects, addProject, updateProject, deleteProject } = useProjects();
 
   useEffect(() => {
     if (projects.length === 0) {
       const exampleProject = addExampleProject();
-      setProjects([exampleProject]);
+      addProject(exampleProject);
     }
   }, []);
-
-  function addProject(project: WritingProject) {
-    setProjects([...projects, project]);
-  }
-
-  function saveProject(project: WritingProject) {
-    setProjects(
-      projects.map((p) => {
-        if (p.id === project.id) {
-          return project;
-        }
-        return p;
-      }),
-    );
-  }
-
-  function deleteProject(projectId: string) {
-    setProjects(projects.filter((p) => p.id !== projectId));
-  }
 
   return (
     <main className="flex flex-col items-center">
@@ -52,7 +25,7 @@ export default function HomePage() {
             <ProjectCard
               key={p.id}
               project={p}
-              saveProject={saveProject}
+              saveProject={updateProject}
               deleteProject={() => deleteProject(p.id)}
             />
           ))}
