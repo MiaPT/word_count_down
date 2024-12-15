@@ -6,18 +6,16 @@ import { CreationDialog } from "~/components/creationDialog";
 import { ProjectCard } from "~/components/projectCard";
 import { addExampleProject } from "~/lib/generateExample";
 import { projectDeserializer } from "~/lib/manageProjectFunctions";
-import { Entry, WritingProject } from "~/types";
+import { WritingProject } from "~/types";
 
 export default function HomePage() {
-
   const [projects, setProjects] = useLocalStorage<WritingProject[]>(
     "projects",
     [],
     {
       deserializer: projectDeserializer,
-    }
+    },
   );
-
 
   useEffect(() => {
     if (projects.length === 0) {
@@ -26,13 +24,23 @@ export default function HomePage() {
     }
   }, []);
 
-  // TODO: why did I put this function here? move? does it need to be here?
-  function addEntry(projectId: string, entry: Entry) {
-    const project = structuredClone(projects.find((p) => p.id === projectId)!);
-    project.entries.push(entry);
-    project.currentCount = entry.newCount;
-    project.edited = new Date();
-    setProjects(projects);
+  function addProject(project: WritingProject) {
+    setProjects([...projects, project]);
+  }
+
+  function saveProject(project: WritingProject) {
+    setProjects(
+      projects.map((p) => {
+        if (p.id === project.id) {
+          return project;
+        }
+        return p;
+      }),
+    );
+  }
+
+  function deleteProject(projectId: string) {
+    setProjects(projects.filter((p) => p.id !== projectId));
   }
 
   return (
@@ -44,11 +52,12 @@ export default function HomePage() {
             <ProjectCard
               key={p.id}
               project={p}
-              addEntry={(entry) => addEntry(p.id, entry)}
+              saveProject={saveProject}
+              deleteProject={() => deleteProject(p.id)}
             />
           ))}
       </div>
-      <CreationDialog />
+      <CreationDialog addProject={addProject} />
     </main>
   );
 }

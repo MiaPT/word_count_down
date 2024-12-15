@@ -23,10 +23,15 @@ import { TConductorInstance } from "react-canvas-confetti/dist/types";
 
 export interface ProjectCardProps {
   project: WritingProject;
-  addEntry: (e: Entry) => void;
+  saveProject: (project: WritingProject) => void;
+  deleteProject: () => void;
 }
 
-export function ProjectCard({ project, addEntry }: ProjectCardProps) {
+export function ProjectCard({
+  project,
+  saveProject,
+  deleteProject,
+}: ProjectCardProps) {
   const daysLeft = Math.round(
     (project.endDate.getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000),
   );
@@ -80,7 +85,11 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
           <CardTitle>{project.title}</CardTitle>
           <div className="flex flex-row">
             <div className="mr-2 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-              <EditDialog project={project} />
+              <EditDialog
+                project={project}
+                saveProject={saveProject}
+                deleteProject={deleteProject}
+              />
             </div>
             <Link href={`/projects/${project.id}`}>
               <div className="transition-transform duration-500 hover:translate-x-1">
@@ -106,7 +115,12 @@ export function ProjectCard({ project, addEntry }: ProjectCardProps) {
               diff: newWordCount - project.currentCount,
               date: new Date(),
             };
-            addEntry(entry);
+            saveProject({
+              ...project,
+              entries: [...project.entries, entry],
+              currentCount: entry.newCount,
+              edited: new Date(),
+            });
             if (!fireworksShot && entry.newCount >= project.goalCount) {
               shootFireworks(3);
               setFireworksShot(true);

@@ -13,21 +13,19 @@ import { WritingProject } from "~/types";
 import Link from "next/link";
 import { ArrowRightIcon, TrashIcon, UnarchiveIcon } from "./ui/SVGIcons";
 import { TooltipContent, TooltipTrigger, Tooltip } from "./ui/tooltip";
-import { DeleteProject, SetIsArchived } from "~/lib/manageProjectFunctions";
 import { toast } from "sonner";
 
 export interface ArchivedCardProps {
   project: WritingProject;
-  projects: WritingProject[];
-  saveProjects: (value: React.SetStateAction<WritingProject[]>) => void;
+  saveProject: (project: WritingProject) => void;
+  deleteProject: () => void;
 }
 
 export function ArchivedCard({
   project,
-  projects,
-  saveProjects,
+  saveProject,
+  deleteProject,
 }: ArchivedCardProps) {
-  
   const wordsLeftTotal = project.goalCount - project.currentCount;
 
   return (
@@ -62,7 +60,7 @@ export function ArchivedCard({
               <Button
                 onClick={() => {
                   if (confirm("Do you really want to delete this project?")) {
-                    DeleteProject(project.id, projects, saveProjects);
+                    deleteProject();
                     toast("Project deleted");
                   }
                 }}
@@ -79,12 +77,18 @@ export function ArchivedCard({
           <TooltipTrigger>
             <Button
               onClick={() => {
-                SetIsArchived(false, project.id, projects, saveProjects);
+                saveProject({
+                  ...project,
+                  archived: false,
+                });
                 toast("Project un-archived", {
                   action: {
                     label: "Undo",
                     onClick: () =>
-                      SetIsArchived(true, project.id, projects, saveProjects),
+                      saveProject({
+                        ...project,
+                        archived: true,
+                      }),
                   },
                 });
               }}

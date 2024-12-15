@@ -40,8 +40,8 @@ export default function ProjectPage() {
     [],
     {
       deserializer: projectDeserializer,
-    }
-  );  
+    },
+  );
 
   const project = projects.filter((p) => p.id === params.id)[0];
 

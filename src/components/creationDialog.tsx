@@ -14,12 +14,14 @@ import {
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { nanoid } from "nanoid";
-import { useLocalStorage } from "usehooks-ts";
 import { useState } from "react";
 import { DatePicker } from "./datePicker";
 
+interface CreationDialogProps {
+  addProject: (project: WritingProject) => void;
+}
 
-export function CreationDialog() {
+export function CreationDialog({ addProject }: CreationDialogProps) {
   const today = new Date();
 
   const [title, setTitle] = useState("");
@@ -65,11 +67,6 @@ export function CreationDialog() {
       }
     }
   }
-
-  const [projects, saveProjects] = useLocalStorage<WritingProject[]>(
-    "projects",
-    [],
-  );
 
   const saveDisabled =
     title.length === 0 ||
@@ -146,7 +143,7 @@ export function CreationDialog() {
             <Button
               disabled={saveDisabled}
               onClick={() => {
-                saveProjects([...projects, proj as WritingProject]);
+                addProject(proj as WritingProject);
                 emptyForm();
               }}
             >
